@@ -77,6 +77,7 @@ BEGIN_MESSAGE_MAP(CAndroidPcToolDlg, CDialogEx)
 	ON_COMMAND(ID_UI_ALIBABA_PNG, &CAndroidPcToolDlg::OnUiAlibabaPng)
 	ON_COMMAND(ID_CAINIAO, &CAndroidPcToolDlg::OnCainiao)
 	ON_COMMAND(ID_AI_GITCODE_DEEPSEEK, &CAndroidPcToolDlg::OnAiGitcodeDeepseek)
+	ON_COMMAND(ID_TO_ICON, &CAndroidPcToolDlg::OnToIcon)
 END_MESSAGE_MAP()
 
 
@@ -218,4 +219,10 @@ void CAndroidPcToolDlg::OnCainiao()
 void CAndroidPcToolDlg::OnAiGitcodeDeepseek()
 {
 	openWeb("https://gitcode.com/ai/?utm_source=sidebar");
+}
+
+
+void CAndroidPcToolDlg::OnToIcon()
+{
+	openWeb("https://convertio.co/zh/");
 }

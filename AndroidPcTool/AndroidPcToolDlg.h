@@ -46,4 +46,5 @@ public:
 	afx_msg void OnUiAlibabaPng();
 	afx_msg void OnCainiao();
 	afx_msg void OnAiGitcodeDeepseek();
+	afx_msg void OnToIcon();
 };
