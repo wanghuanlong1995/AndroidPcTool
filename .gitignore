@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+/.vs/AndroidPcTool
+/.vs/AndroidPcTool/FileContentIndex
+/x64/Debug
+/AndroidPcTool/x64/Debug
