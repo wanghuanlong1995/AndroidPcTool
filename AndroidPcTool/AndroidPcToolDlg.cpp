@@ -74,6 +74,9 @@ BEGIN_MESSAGE_MAP(CAndroidPcToolDlg, CDialogEx)
 	ON_COMMAND(ID_GITHUP, &CAndroidPcToolDlg::OnGithup)
 	ON_COMMAND(ID_GITCODE, &CAndroidPcToolDlg::OnGitcode)
 	ON_COMMAND(ID_GITEE, &CAndroidPcToolDlg::OnGitee)
+	ON_COMMAND(ID_UI_ALIBABA_PNG, &CAndroidPcToolDlg::OnUiAlibabaPng)
+	ON_COMMAND(ID_CAINIAO, &CAndroidPcToolDlg::OnCainiao)
+	ON_COMMAND(ID_AI_GITCODE_DEEPSEEK, &CAndroidPcToolDlg::OnAiGitcodeDeepseek)
 END_MESSAGE_MAP()
 
 
@@ -197,4 +200,22 @@ void CAndroidPcToolDlg::OnGitcode()
 void CAndroidPcToolDlg::OnGitee()
 {
 	openWeb("https://gitee.com/");
+}
+
+
+void CAndroidPcToolDlg::OnUiAlibabaPng()
+{
+	openWeb("https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.5&type=2");
+}
+
+
+void CAndroidPcToolDlg::OnCainiao()
+{
+	openWeb("https://www.runoob.com/w3cnote_genre/android-advance");
+}
+
+
+void CAndroidPcToolDlg::OnAiGitcodeDeepseek()
+{
+	openWeb("https://gitcode.com/ai/?utm_source=sidebar");
 }

@@ -43,4 +43,7 @@ public:
 	afx_msg void OnGithup();
 	afx_msg void OnGitcode();
 	afx_msg void OnGitee();
+	afx_msg void OnUiAlibabaPng();
+	afx_msg void OnCainiao();
+	afx_msg void OnAiGitcodeDeepseek();
 };
