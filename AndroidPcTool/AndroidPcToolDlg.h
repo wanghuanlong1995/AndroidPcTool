@@ -47,4 +47,13 @@ public:
 	afx_msg void OnCainiao();
 	afx_msg void OnAiGitcodeDeepseek();
 	afx_msg void OnToIcon();
+	afx_msg void OnBnClickedButtonTopActivity();
+	// 执行结果输出
+	CString m_editShowResut;
+	afx_msg void OnBnClickedButtonTopPath();
+	afx_msg void OnBnClickedButtonOpenScrcpy();
+	// 是否将投屏工具置顶
+	BOOL m_isScrcpyTop;
+	afx_msg void OnBnClickedCheckScecpyTop();
+	afx_msg void OnBnClickedButtonTopApkVersion();
 };
