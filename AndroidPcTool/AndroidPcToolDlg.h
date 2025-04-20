@@ -14,6 +14,12 @@ public:
 
 	void openWeb(const char* url);
 
+	void setViewHide(int viewId); // 隐藏控件
+
+	CStringA cmdAndShowEdit(CStringA cmd); // 执行cmd命令并且显示到编辑框
+
+	CStringA cmdAndShowTopApkEdit(CStringA cmd);  // 获取顶部apk后执行adb 和顶部apk相关的 执行cmd命令并且显示到编辑框
+
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ANDROIDPCTOOL_DIALOG };
@@ -65,4 +71,6 @@ public:
 	// 是否导出常用日志
 	CButton m_radionCommonLogs;
 	afx_msg void OnBnClickedMfcmenubuttonPullLog();
+	afx_msg void OnConifPathAndUse();
+	afx_msg void OnBnClickedButtonPullTopApk();
 };

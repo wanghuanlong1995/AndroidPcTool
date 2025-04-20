@@ -6,6 +6,7 @@
 #include "framework.h"
 #include "AndroidPcTool.h"
 #include "AndroidPcToolDlg.h"
+#include "PathAndUseConfigDlg.h"
 #include "afxdialogex.h"
 #include <string>
 #include <vector>
@@ -97,6 +98,8 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_COMMAND(ID_henleylee, &AndroidPcToolDlg::Onhenleylee)
 	ON_COMMAND(ID_GET_PACK, &AndroidPcToolDlg::OnGetPack)
 	ON_BN_CLICKED(IDC_MFCMENUBUTTON_PULL_LOG, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonPullLog)
+	ON_COMMAND(ID_CONIF_PATH_AND_USE, &AndroidPcToolDlg::OnConifPathAndUse)
+	ON_BN_CLICKED(IDC_BUTTON_PULL_TOP_APK, &AndroidPcToolDlg::OnBnClickedButtonPullTopApk)
 END_MESSAGE_MAP()
 
 
@@ -134,6 +137,9 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 
 	m_radionCommonLogs.SetCheck(TRUE);
+
+	setViewHide(IDC_MFCMENUBUTTON1);
+	setViewHide(IDC_MFCMENUBUTTON2);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -213,6 +219,47 @@ void AndroidPcToolDlg::OnBnClickedCheckScecpyTop()
 void AndroidPcToolDlg::openWeb(const char* url)
 {
 	ShellExecuteA(NULL, "open", url, "", "", SW_SHOWNORMAL);
+}
+
+void AndroidPcToolDlg::setViewHide(int viewId)
+{
+	GetDlgItem(viewId)->ShowWindow(SW_HIDE);
+}
+
+CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd)
+{
+	FILE* pipe;
+	char buffer[1024];
+	// 执行命令获取应用的安装路径
+	std::string command = cmd.GetString();
+	pipe = _popen(command.c_str(), "r");
+	if (!pipe) {
+		AfxMessageBox(_T("Failed to execute command"));
+		return "";
+	}
+
+	//adb shell dumpsys package tv.danmaku.bili | findstr version
+
+	// 读取安装路径
+	std::string installPath = "";
+	while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+		installPath = installPath + buffer + "\r\n";
+	}
+	_pclose(pipe);
+
+	// 将结果显示在编辑框中
+	m_editShowResut = installPath.c_str();
+	if (installPath.empty()) {
+		m_editShowResut = L"请检查设备连接或者是否解锁";
+	}
+	UpdateData(FALSE);
+
+	return installPath.c_str();
+}
+
+CStringA AndroidPcToolDlg::cmdAndShowTopApkEdit(CStringA cmd)
+{
+	return CStringA();
 }
 
 void AndroidPcToolDlg::OnWxCode()
@@ -311,27 +358,7 @@ void AndroidPcToolDlg::OnBnClickedButtonTopActivity()
 	//	MessageBox(_T("无法执行ADB命令"), _T("错误"), MB_ICONERROR);
 	//}
 
-	 // 执行adb命令
-	FILE* pipe = _popen("adb shell dumpsys activity | findstr mResumedActivity", "r");
-	if (!pipe) {
-		AfxMessageBox(_T("Failed to execute command"));
-		return;
-	}
-
-	// 读取命令输出
-	char buffer[1024];
-	std::string result = "";
-	while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-		result += buffer;
-	}
-	_pclose(pipe);
-
-	// 将结果显示在编辑框中
-	m_editShowResut = result.c_str();
-	if (result.empty()) {
-		m_editShowResut = L"请检查设备连接或者是否解锁";
-	}
-	UpdateData(FALSE);
+	cmdAndShowEdit("adb shell dumpsys activity | findstr mResumedActivity");
 }
 
 
@@ -359,39 +386,14 @@ std::string getTopPackageName()
 void AndroidPcToolDlg::OnBnClickedButtonTopPath()
 {
 	// 执行命令获取当前置顶应用的包名
-	FILE* pipe;
-
-	// 读取包名
-	char buffer[128];
 	std::string packageName = getTopPackageName();
 	if (packageName.empty()) {
 		AfxMessageBox(_T("No active application found"));
 		return;
 	}
-
 	// 执行命令获取应用的安装路径
 	std::string command = "adb shell pm path " + packageName;
-	pipe = _popen(command.c_str(), "r");
-	if (!pipe) {
-		AfxMessageBox(_T("Failed to execute command"));
-		return;
-	}
-
-	// 读取安装路径
-	std::string installPath = "";
-	if (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-		installPath = buffer;
-		// 去掉换行符
-		installPath.erase(installPath.find_last_not_of("\r\n") + 1);
-	}
-	_pclose(pipe);
-
-	// 将结果显示在编辑框中
-	m_editShowResut = installPath.c_str();
-	if (installPath.empty()) {
-		m_editShowResut = L"请检查设备连接或者是否解锁";
-	}
-	UpdateData(FALSE);
+	cmdAndShowEdit(command.c_str());
 }
 
 
@@ -405,10 +407,6 @@ void AndroidPcToolDlg::OnBnClickedButtonOpenScrcpy()
 void AndroidPcToolDlg::OnBnClickedButtonTopApkVersion()
 {
 	// 执行命令获取当前置顶应用的包名
-	FILE* pipe;
-
-	// 读取包名
-	char buffer[1024];
 	std::string packageName = getTopPackageName();
 	if (packageName.empty()) {
 		AfxMessageBox(_T("No active application found"));
@@ -417,27 +415,7 @@ void AndroidPcToolDlg::OnBnClickedButtonTopApkVersion()
 
 	// 执行命令获取应用的安装路径
 	std::string command = "adb shell dumpsys package " + packageName + " | findstr version";
-	pipe = _popen(command.c_str(), "r");
-	if (!pipe) {
-		AfxMessageBox(_T("Failed to execute command"));
-		return;
-	}
-
-	//adb shell dumpsys package tv.danmaku.bili | findstr version
-
-	// 读取安装路径
-	std::string installPath = "";
-	while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-		installPath = installPath + buffer + "\r\n";
-	}
-	_pclose(pipe);
-
-	// 将结果显示在编辑框中
-	m_editShowResut = installPath.c_str();
-	if (installPath.empty()) {
-		m_editShowResut = L"请检查设备连接或者是否解锁";
-	}
-	UpdateData(FALSE);
+	cmdAndShowEdit(command.c_str());
 }
 
 
@@ -480,4 +458,17 @@ void AndroidPcToolDlg::OnGetPack()
 void AndroidPcToolDlg::OnBnClickedMfcmenubuttonPullLog()
 {
 	//
+}
+
+
+void AndroidPcToolDlg::OnConifPathAndUse()
+{
+	PathAndUseConfigDlg dlg;
+	dlg.DoModal();
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonPullTopApk()
+{
+	
 }

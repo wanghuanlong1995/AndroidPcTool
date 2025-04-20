@@ -9,30 +9,45 @@
 #define IDS_STRING_VERSION              102
 #define IDR_MAINFRAME                   128
 #define IDR_MENU_MAIN                   130
-#define IDD_DIALOG1                     132
 #define IDD_DIALOG_MAIN_PATH_CONFIG     132
 #define IDC_BUTTON1                     1000
 #define IDC_BUTTON_OPEN_SCRCPY          1000
+#define IDC_BUTTON_SAVE                 1000
 #define IDC_BUTTON2                     1001
 #define IDC_BUTTON_SHOT_AND_PULL        1001
 #define IDC_EDIT1                       1002
 #define IDC_EDIT_INPUT                  1002
 #define IDC_BUTTON_TOP_ACTIVITY         1003
+#define IDC_EDIT2                       1003
 #define IDC_BUTTON_TOP_PATH             1004
+#define IDC_EDIT3                       1004
 #define IDC_BUTTON5                     1005
 #define IDC_BUTTON_TOP_APK_VERSION      1005
+#define IDC_EDIT4                       1005
 #define IDC_BUTTON6                     1006
+#define IDC_EDIT5                       1006
+#define IDC_BUTTON_PULL_TOP_APK         1006
 #define IDC_BUTTON7                     1007
+#define IDC_EDIT6                       1007
 #define IDC_BUTTON8                     1008
+#define IDC_EDIT7                       1008
 #define IDC_MFCMENUBUTTON1              1009
+#define IDC_EDIT8                       1009
 #define IDC_MFCMENUBUTTON2              1010
+#define IDC_EDIT9                       1010
 #define IDC_BUTTON9                     1011
+#define IDC_EDIT10                      1011
 #define IDC_BUTTON10                    1012
+#define IDC_EDIT11                      1012
 #define IDC_CHECK1                      1013
 #define IDC_CHECK_SCECPY_TOP            1013
 #define IDC_CHECK_TOP_SELFT             1014
+#define IDC_EDIT12                      1014
 #define IDC_CHECK_AUTO_OPEN_DIR         1015
+#define IDC_EDIT13                      1015
 #define IDC_BUTTON11                    1016
+#define IDC_EDIT14                      1016
+#define IDC_EDIT15                      1017
 #define IDC_BUTTON13                    1018
 #define IDC_BUTTON14                    1019
 #define IDC_EDIT_SHOW_RESULT            1020
@@ -41,6 +56,37 @@
 #define IDC_RADIO2                      1024
 #define IDC_BUTTON_DEL_LOG              1025
 #define IDC_MFCMENUBUTTON_PULL_LOG      1026
+#define IDC_BUTTON3                     1027
+#define IDC_BUTTON4                     1028
+#define IDC_BUTTON12                    1029
+#define IDC_BUTTON15                    1030
+#define IDC_BUTTON16                    1031
+#define IDC_BUTTON17                    1032
+#define IDC_BUTTON18                    1033
+#define IDC_BUTTON19                    1034
+#define IDC_BUTTON20                    1035
+#define IDC_BUTTON21                    1036
+#define IDC_BUTTON22                    1037
+#define IDC_BUTTON23                    1038
+#define IDC_BUTTON24                    1039
+#define IDC_BUTTON25                    1040
+#define IDC_BUTTON26                    1041
+#define IDC_BUTTON27                    1042
+#define IDC_BUTTON28                    1043
+#define IDC_BUTTON29                    1044
+#define IDC_BUTTON30                    1045
+#define IDC_BUTTON31                    1046
+#define IDC_BUTTON32                    1047
+#define IDC_BUTTON33                    1048
+#define IDC_BUTTON34                    1049
+#define IDC_BUTTON35                    1050
+#define IDC_BUTTON36                    1051
+#define IDC_MFCLINK1                    1052
+#define IDC_BUTTON37                    1053
+#define IDC_BUTTON38                    1054
+#define IDC_BUTTON39                    1055
+#define IDC_BUTTON40                    1056
+#define IDC_BUTTON41                    1057
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -78,14 +124,15 @@
 #define ID_henleylee                    32805
 #define ID_32806                        32806
 #define ID_GET_PACK                     32807
+#define ID_CONIF_PATH_AND_USE           32808
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        134
-#define _APS_NEXT_COMMAND_VALUE         32808
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_RESOURCE_VALUE        135
+#define _APS_NEXT_COMMAND_VALUE         32809
+#define _APS_NEXT_CONTROL_VALUE         1053
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
