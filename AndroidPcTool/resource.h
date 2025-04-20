@@ -9,6 +9,8 @@
 #define IDS_STRING_VERSION              102
 #define IDR_MAINFRAME                   128
 #define IDR_MENU_MAIN                   130
+#define IDD_DIALOG1                     132
+#define IDD_DIALOG_MAIN_PATH_CONFIG     132
 #define IDC_BUTTON1                     1000
 #define IDC_BUTTON_OPEN_SCRCPY          1000
 #define IDC_BUTTON2                     1001
@@ -34,6 +36,11 @@
 #define IDC_BUTTON13                    1018
 #define IDC_BUTTON14                    1019
 #define IDC_EDIT_SHOW_RESULT            1020
+#define IDC_RADIO_                      1021
+#define IDC_RADIO_Common_Logs           1023
+#define IDC_RADIO2                      1024
+#define IDC_BUTTON_DEL_LOG              1025
+#define IDC_MFCMENUBUTTON_PULL_LOG      1026
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -53,14 +60,32 @@
 #define ID_AI_GITCODE_DEEPSEEK          32787
 #define ID_32788                        32788
 #define ID_TO_ICON                      32789
+#define ID_32790                        32790
+#define ID_PICTURE_                     32791
+#define ID_PICTURE_COMPRESS             32792
+#define ID_32793                        32793
+#define ID_Android_CODE                 32794
+#define ID_32795                        32795
+#define ID_Mp4ToMp3                     32796
+#define ID_32797                        32797
+#define ID_LanHU_UI                     32798
+#define ID_32799                        32799
+#define ID_32800                        32800
+#define ID_henleylee_github             32801
+#define ID_Menu                         32802
+#define ID_32803                        32803
+#define ID_32804                        32804
+#define ID_henleylee                    32805
+#define ID_32806                        32806
+#define ID_GET_PACK                     32807
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        132
-#define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1021
+#define _APS_NEXT_RESOURCE_VALUE        134
+#define _APS_NEXT_COMMAND_VALUE         32808
+#define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

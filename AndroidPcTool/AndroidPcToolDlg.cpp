@@ -48,11 +48,11 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CAndroidPcToolDlg 对话框
+// AndroidPcToolDlg 对话框
 
 
 
-CAndroidPcToolDlg::CAndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
+AndroidPcToolDlg::AndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_ANDROIDPCTOOL_DIALOG, pParent)
 	, m_isTopSelft(FALSE)
 	, m_isAutoOpenPullDir(TRUE)
@@ -62,39 +62,47 @@ CAndroidPcToolDlg::CAndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-void CAndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
+void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_TOP_SELFT, m_isTopSelft);
 	DDX_Check(pDX, IDC_CHECK_AUTO_OPEN_DIR, m_isAutoOpenPullDir);
 	DDX_Text(pDX, IDC_EDIT_SHOW_RESULT, m_editShowResut);
 	DDX_Check(pDX, IDC_CHECK_SCECPY_TOP, m_isScrcpyTop);
+	DDX_Control(pDX, IDC_RADIO_Common_Logs, m_radionCommonLogs);
 }
 
-BEGIN_MESSAGE_MAP(CAndroidPcToolDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_CHECK_TOP_SELFT, &CAndroidPcToolDlg::OnBnClickedCheckTopSelft)
-	ON_COMMAND(ID_WX_CODE, &CAndroidPcToolDlg::OnWxCode)
-	ON_COMMAND(ID_GITHUP, &CAndroidPcToolDlg::OnGithup)
-	ON_COMMAND(ID_GITCODE, &CAndroidPcToolDlg::OnGitcode)
-	ON_COMMAND(ID_GITEE, &CAndroidPcToolDlg::OnGitee)
-	ON_COMMAND(ID_UI_ALIBABA_PNG, &CAndroidPcToolDlg::OnUiAlibabaPng)
-	ON_COMMAND(ID_CAINIAO, &CAndroidPcToolDlg::OnCainiao)
-	ON_COMMAND(ID_AI_GITCODE_DEEPSEEK, &CAndroidPcToolDlg::OnAiGitcodeDeepseek)
-	ON_COMMAND(ID_TO_ICON, &CAndroidPcToolDlg::OnToIcon)
-	ON_BN_CLICKED(IDC_BUTTON_TOP_ACTIVITY, &CAndroidPcToolDlg::OnBnClickedButtonTopActivity)
-	ON_BN_CLICKED(IDC_BUTTON_TOP_PATH, &CAndroidPcToolDlg::OnBnClickedButtonTopPath)
-	ON_BN_CLICKED(IDC_BUTTON_OPEN_SCRCPY, &CAndroidPcToolDlg::OnBnClickedButtonOpenScrcpy)
-	ON_BN_CLICKED(IDC_CHECK_SCECPY_TOP, &CAndroidPcToolDlg::OnBnClickedCheckScecpyTop)
-	ON_BN_CLICKED(IDC_BUTTON_TOP_APK_VERSION, &CAndroidPcToolDlg::OnBnClickedButtonTopApkVersion)
+	ON_BN_CLICKED(IDC_CHECK_TOP_SELFT, &AndroidPcToolDlg::OnBnClickedCheckTopSelft)
+	ON_COMMAND(ID_WX_CODE, &AndroidPcToolDlg::OnWxCode)
+	ON_COMMAND(ID_GITHUP, &AndroidPcToolDlg::OnGithup)
+	ON_COMMAND(ID_GITCODE, &AndroidPcToolDlg::OnGitcode)
+	ON_COMMAND(ID_GITEE, &AndroidPcToolDlg::OnGitee)
+	ON_COMMAND(ID_UI_ALIBABA_PNG, &AndroidPcToolDlg::OnUiAlibabaPng)
+	ON_COMMAND(ID_CAINIAO, &AndroidPcToolDlg::OnCainiao)
+	ON_COMMAND(ID_AI_GITCODE_DEEPSEEK, &AndroidPcToolDlg::OnAiGitcodeDeepseek)
+	ON_COMMAND(ID_TO_ICON, &AndroidPcToolDlg::OnToIcon)
+	ON_BN_CLICKED(IDC_BUTTON_TOP_ACTIVITY, &AndroidPcToolDlg::OnBnClickedButtonTopActivity)
+	ON_BN_CLICKED(IDC_BUTTON_TOP_PATH, &AndroidPcToolDlg::OnBnClickedButtonTopPath)
+	ON_BN_CLICKED(IDC_BUTTON_OPEN_SCRCPY, &AndroidPcToolDlg::OnBnClickedButtonOpenScrcpy)
+	ON_BN_CLICKED(IDC_CHECK_SCECPY_TOP, &AndroidPcToolDlg::OnBnClickedCheckScecpyTop)
+	ON_BN_CLICKED(IDC_BUTTON_TOP_APK_VERSION, &AndroidPcToolDlg::OnBnClickedButtonTopApkVersion)
+	ON_COMMAND(ID_PICTURE_COMPRESS, &AndroidPcToolDlg::OnPictureCompress)
+	ON_COMMAND(ID_Android_CODE, &AndroidPcToolDlg::OnAndroidCode)
+	ON_COMMAND(ID_Mp4ToMp3, &AndroidPcToolDlg::OnMp4tomp3)
+	ON_COMMAND(ID_LanHU_UI, &AndroidPcToolDlg::OnLanhuUi)
+	ON_COMMAND(ID_henleylee, &AndroidPcToolDlg::Onhenleylee)
+	ON_COMMAND(ID_GET_PACK, &AndroidPcToolDlg::OnGetPack)
+	ON_BN_CLICKED(IDC_MFCMENUBUTTON_PULL_LOG, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonPullLog)
 END_MESSAGE_MAP()
 
 
-// CAndroidPcToolDlg 消息处理程序
+// AndroidPcToolDlg 消息处理程序
 
-BOOL CAndroidPcToolDlg::OnInitDialog()
+BOOL AndroidPcToolDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -125,10 +133,11 @@ BOOL CAndroidPcToolDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
+	m_radionCommonLogs.SetCheck(TRUE);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
-void CAndroidPcToolDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void AndroidPcToolDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
@@ -145,7 +154,7 @@ void CAndroidPcToolDlg::OnSysCommand(UINT nID, LPARAM lParam)
 //  来绘制该图标。  对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
 
-void CAndroidPcToolDlg::OnPaint()
+void AndroidPcToolDlg::OnPaint()
 {
 	if (IsIconic())
 	{
@@ -172,14 +181,14 @@ void CAndroidPcToolDlg::OnPaint()
 
 //当用户拖动最小化窗口时系统调用此函数取得光标
 //显示。
-HCURSOR CAndroidPcToolDlg::OnQueryDragIcon()
+HCURSOR AndroidPcToolDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
 
 
-void CAndroidPcToolDlg::OnBnClickedCheckTopSelft()
+void AndroidPcToolDlg::OnBnClickedCheckTopSelft()
 {
 	UpdateData(TRUE);
 	// 设置窗口的是否置顶状态
@@ -187,7 +196,7 @@ void CAndroidPcToolDlg::OnBnClickedCheckTopSelft()
 }
 
 
-void CAndroidPcToolDlg::OnBnClickedCheckScecpyTop()
+void AndroidPcToolDlg::OnBnClickedCheckScecpyTop()
 {
 	HWND hwnd = FindWindowA("SDL_app", NULL);
 	if (hwnd == NULL) {
@@ -201,60 +210,60 @@ void CAndroidPcToolDlg::OnBnClickedCheckScecpyTop()
 }
 
 
-void CAndroidPcToolDlg::openWeb(const char* url)
+void AndroidPcToolDlg::openWeb(const char* url)
 {
 	ShellExecuteA(NULL, "open", url, "", "", SW_SHOWNORMAL);
 }
 
-void CAndroidPcToolDlg::OnWxCode()
+void AndroidPcToolDlg::OnWxCode()
 {
 	openWeb("https://git.weixin.qq.com/explore");
 }
 
 
-void CAndroidPcToolDlg::OnGithup()
+void AndroidPcToolDlg::OnGithup()
 {
 	openWeb("https://github.com/crazycodeboy/RNStudyNotes");
 }
 
 
-void CAndroidPcToolDlg::OnGitcode()
+void AndroidPcToolDlg::OnGitcode()
 {
 	openWeb("https://gitcode.com/");
 }
 
 
-void CAndroidPcToolDlg::OnGitee()
+void AndroidPcToolDlg::OnGitee()
 {
 	openWeb("https://gitee.com/");
 }
 
 
-void CAndroidPcToolDlg::OnUiAlibabaPng()
+void AndroidPcToolDlg::OnUiAlibabaPng()
 {
 	openWeb("https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.5&type=2");
 }
 
 
-void CAndroidPcToolDlg::OnCainiao()
+void AndroidPcToolDlg::OnCainiao()
 {
 	openWeb("https://www.runoob.com/w3cnote_genre/android-advance");
 }
 
 
-void CAndroidPcToolDlg::OnAiGitcodeDeepseek()
+void AndroidPcToolDlg::OnAiGitcodeDeepseek()
 {
 	openWeb("https://gitcode.com/ai/?utm_source=sidebar");
 }
 
 
-void CAndroidPcToolDlg::OnToIcon()
+void AndroidPcToolDlg::OnToIcon()
 {
 	openWeb("https://convertio.co/zh/");
 }
 
 
-void CAndroidPcToolDlg::OnBnClickedButtonTopActivity()
+void AndroidPcToolDlg::OnBnClickedButtonTopActivity()
 {
 	//CoInitialize(NULL);
 
@@ -347,7 +356,7 @@ std::string getTopPackageName()
 	return packageName;
 }
 
-void CAndroidPcToolDlg::OnBnClickedButtonTopPath()
+void AndroidPcToolDlg::OnBnClickedButtonTopPath()
 {
 	// 执行命令获取当前置顶应用的包名
 	FILE* pipe;
@@ -386,14 +395,14 @@ void CAndroidPcToolDlg::OnBnClickedButtonTopPath()
 }
 
 
-void CAndroidPcToolDlg::OnBnClickedButtonOpenScrcpy()
+void AndroidPcToolDlg::OnBnClickedButtonOpenScrcpy()
 {
 	ShellExecuteA(NULL, "open", "scrcpy-noconsole.vbs", "", "scrcpy-win64-v3.2", SW_SHOWNORMAL);
 }
 
 
 
-void CAndroidPcToolDlg::OnBnClickedButtonTopApkVersion()
+void AndroidPcToolDlg::OnBnClickedButtonTopApkVersion()
 {
 	// 执行命令获取当前置顶应用的包名
 	FILE* pipe;
@@ -429,4 +438,46 @@ void CAndroidPcToolDlg::OnBnClickedButtonTopApkVersion()
 		m_editShowResut = L"请检查设备连接或者是否解锁";
 	}
 	UpdateData(FALSE);
+}
+
+
+void AndroidPcToolDlg::OnPictureCompress()
+{
+	openWeb("https://tinypng.com/");
+}
+
+
+void AndroidPcToolDlg::OnAndroidCode()
+{
+	openWeb("https://www.androidos.net.cn/sourcecode");
+}
+
+
+void AndroidPcToolDlg::OnMp4tomp3()
+{
+	openWeb("https://mp4tomp3.org/");
+}
+
+
+void AndroidPcToolDlg::OnLanhuUi()
+{
+	openWeb("https://lanhuapp.com/dashboard/#/item");
+}
+
+
+void AndroidPcToolDlg::Onhenleylee()
+{
+	openWeb("https://henleylee.github.io/");
+}
+
+
+void AndroidPcToolDlg::OnGetPack()
+{
+	openWeb("https://blog.csdn.net/c10WTiybQ1Ye3/article/details/78098632");
+}
+
+
+void AndroidPcToolDlg::OnBnClickedMfcmenubuttonPullLog()
+{
+	//
 }

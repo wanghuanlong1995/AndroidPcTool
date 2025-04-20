@@ -5,12 +5,12 @@
 #pragma once
 
 
-// CAndroidPcToolDlg 对话框
-class CAndroidPcToolDlg : public CDialogEx
+// AndroidPcToolDlg 对话框
+class AndroidPcToolDlg : public CDialogEx
 {
 // 构造
 public:
-	CAndroidPcToolDlg(CWnd* pParent = nullptr);	// 标准构造函数
+	AndroidPcToolDlg(CWnd* pParent = nullptr);	// 标准构造函数
 
 	void openWeb(const char* url);
 
@@ -56,4 +56,13 @@ public:
 	BOOL m_isScrcpyTop;
 	afx_msg void OnBnClickedCheckScecpyTop();
 	afx_msg void OnBnClickedButtonTopApkVersion();
+	afx_msg void OnPictureCompress();
+	afx_msg void OnAndroidCode();
+	afx_msg void OnMp4tomp3();
+	afx_msg void OnLanhuUi();
+	afx_msg void Onhenleylee();
+	afx_msg void OnGetPack();
+	// 是否导出常用日志
+	CButton m_radionCommonLogs;
+	afx_msg void OnBnClickedMfcmenubuttonPullLog();
 };
