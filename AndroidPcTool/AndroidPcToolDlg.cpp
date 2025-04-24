@@ -358,7 +358,7 @@ void AndroidPcToolDlg::OnBnClickedButtonTopActivity()
 	//	MessageBox(_T("无法执行ADB命令"), _T("错误"), MB_ICONERROR);
 	//}
 
-	cmdAndShowEdit("adb shell dumpsys activity | findstr mResumedActivity");
+	cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"");
 }
 
 
