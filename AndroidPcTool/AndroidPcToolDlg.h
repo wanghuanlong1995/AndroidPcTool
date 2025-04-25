@@ -16,9 +16,11 @@ public:
 
 	void setViewHide(int viewId); // 隐藏控件
 
-	CStringA cmdAndShowEdit(CStringA cmd); // 执行cmd命令并且显示到编辑框
+	CStringA cmdAndShowEdit(CStringA cmd, bool isNeedShowDefalutMsg = false); // 执行cmd命令并且显示到编辑框
 
 	CStringA cmdAndShowTopApkEdit(CStringA cmd);  // 获取顶部apk后执行adb 和顶部apk相关的 执行cmd命令并且显示到编辑框
+
+	CString getAndChekTopPackageName();  // 检查获取顶部apk后执行adb是否正常
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -75,4 +77,10 @@ public:
 	afx_msg void OnBnClickedButtonPullTopApk();
 	afx_msg void OnBnClickedButtonOpenJadx();
 	afx_msg void OnBnClickedButtonOpneFscapture();
+	afx_msg void OnBnClickedButtonAdbReboot();
+	afx_msg void OnBnClickedButtonFastbootReboot();
+	afx_msg void OnBnClickedButtonRootRemount();
+	afx_msg void OnBnClickedMfcmenubuttonKillAdb();
+	afx_msg void OnBnClickedMfcmenubuttonKillJava();
+	afx_msg void OnBnClickedButtonClearApp();
 };

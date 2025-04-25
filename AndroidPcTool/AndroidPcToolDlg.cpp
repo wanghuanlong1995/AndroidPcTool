@@ -102,6 +102,12 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_PULL_TOP_APK, &AndroidPcToolDlg::OnBnClickedButtonPullTopApk)
 	ON_BN_CLICKED(IDC_BUTTON_OPEN_JADX, &AndroidPcToolDlg::OnBnClickedButtonOpenJadx)
 	ON_BN_CLICKED(IDC_BUTTON_OPNE_FSCapture, &AndroidPcToolDlg::OnBnClickedButtonOpneFscapture)
+	ON_BN_CLICKED(IDC_BUTTON_ADB_REBOOT, &AndroidPcToolDlg::OnBnClickedButtonAdbReboot)
+	ON_BN_CLICKED(IDC_BUTTON_FASTBOOT_REBOOT, &AndroidPcToolDlg::OnBnClickedButtonFastbootReboot)
+	ON_BN_CLICKED(IDC_BUTTON_ROOT_REMOUNT, &AndroidPcToolDlg::OnBnClickedButtonRootRemount)
+	ON_BN_CLICKED(IDC_MFCMENUBUTTON1, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillAdb)
+	ON_BN_CLICKED(IDC_MFCMENUBUTTON2, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillJava)
+	ON_BN_CLICKED(IDC_BUTTON_CLEAR_APP, &AndroidPcToolDlg::OnBnClickedButtonClearApp)
 END_MESSAGE_MAP()
 
 
@@ -140,8 +146,6 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 
 	m_radionCommonLogs.SetCheck(TRUE);
 
-	setViewHide(IDC_MFCMENUBUTTON1);
-	setViewHide(IDC_MFCMENUBUTTON2);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -228,11 +232,10 @@ void AndroidPcToolDlg::setViewHide(int viewId)
 	GetDlgItem(viewId)->ShowWindow(SW_HIDE);
 }
 
-CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd)
+CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd,bool isNeedShowDefalutMsg)
 {
 	FILE* pipe;
 	char buffer[1024];
-	// 执行命令获取应用的安装路径
 	std::string command = cmd.GetString();
 	pipe = _popen(command.c_str(), "r");
 	if (!pipe) {
@@ -242,7 +245,6 @@ CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd)
 
 	//adb shell dumpsys package tv.danmaku.bili | findstr version
 
-	// 读取安装路径
 	std::string installPath = "";
 	while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
 		installPath = installPath + buffer + "\r\n";
@@ -251,7 +253,7 @@ CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd)
 
 	// 将结果显示在编辑框中
 	m_editShowResut = installPath.c_str();
-	if (installPath.empty()) {
+	if (installPath.empty() && isNeedShowDefalutMsg) {
 		m_editShowResut = L"请检查设备连接或者是否解锁";
 	}
 	UpdateData(FALSE);
@@ -311,6 +313,67 @@ void AndroidPcToolDlg::OnToIcon()
 	openWeb("https://convertio.co/zh/");
 }
 
+// 提取包名
+CString ExtractPackageName(const CString& output) {
+	int nPos = 0;
+	CString line, packageName;
+	CString lastLine;
+
+	while ((nPos = _ttoi(output.Tokenize(_T("\r\n"), nPos))) != -1) {
+		line = output.Tokenize(_T("\r\n"), nPos);
+		if (line.Find(_T("ACTIVITY")) != -1) {
+			lastLine = line;
+		}
+	}
+
+	if (!lastLine.IsEmpty()) {
+		int start = lastLine.Find(_T(' ')) + 1;
+		int end = lastLine.Find(_T('/'), start);
+		if (start > 0 && end > start) {
+			packageName = lastLine.Mid(start, end - start);
+		}
+	}
+	return packageName;
+}
+
+// 提取安装路径
+CStringA ExtractInstallPath(const CStringA& output) {
+	int nPos = output.Find(_T(':'));
+	if (nPos != -1) {
+		return output.Mid(nPos + 1).Trim();
+	}
+	return ("");
+}
+//
+//// 使用示例
+//CString GetAppInstallPath() {
+//	// 获取当前Activity信息
+//	CString adbCmd = _T("adb shell dumpsys activity top");
+//	CString output = cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"", true);
+//
+//	// 解析包名
+//	CString packageName = ExtractPackageName(output);
+//	if (packageName.IsEmpty()) {
+//		output = _T("无法获取包名");
+//		return output;
+//	}
+//
+//	// 获取安装路径
+//	CString pathCmd;
+//	pathCmd.Format(_T("adb shell pm path %s"), packageName);
+//	CString pathOutput = ExecuteCommand(pathCmd);
+//
+//	// 解析路径
+//	CString installPath = ExtractInstallPath(pathOutput);
+//	if (!installPath.IsEmpty()) {
+//		output = _T("安装路径: ") + installPath;
+//	}
+//	else {
+//		output = _T("无法获取安装路径");
+//	}
+//	return output;
+//}
+
 
 void AndroidPcToolDlg::OnBnClickedButtonTopActivity()
 {
@@ -360,42 +423,72 @@ void AndroidPcToolDlg::OnBnClickedButtonTopActivity()
 	//	MessageBox(_T("无法执行ADB命令"), _T("错误"), MB_ICONERROR);
 	//}
 
-	cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"");
+	cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"",true);
 }
 
-
-std::string getTopPackageName()
+CString getTopPackageName()
 {
 	// 执行命令获取当前置顶应用的包名
-	FILE* pipe = _popen("adb shell \"dumpsys activity | grep 'mResumedActivity' | awk -F ' ' '{print $4}' | cut -d '/' -f 1\"", "r");
+	FILE* pipe = _popen("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"", "r");
 	if (!pipe) {
-		AfxMessageBox(_T("Failed to execute command"));
-		return "";
+		//AfxMessageBox(_T("Failed to execute command"));
+		return L"";
 	}
 
 	// 读取包名
 	char buffer[128];
-	std::string packageName = "";
+	std::string packageAndActivityName = "";
 	if (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-		packageName = buffer;
+		packageAndActivityName = buffer;
 		// 去掉换行符
-		packageName.erase(packageName.find_last_not_of("\r\n") + 1);
+		packageAndActivityName.erase(packageAndActivityName.find_last_not_of("\r\n") + 1);
 	}
 	_pclose(pipe);
+	CString output = CString(packageAndActivityName.c_str());
+	CString packageName;
+	// 查找 "com." 起始位置，避免截取到前面的无关内容
+	int nStartPos = output.Find(_T("ACTIVITY")) + 9;
+	if (nStartPos != -1) {
+		// 从 "com." 开始查找第一个 '/'
+		int nSlashPos = output.Find(_T('/'), nStartPos);
+		if (nSlashPos != -1) {
+			packageName = output.Mid(nStartPos, nSlashPos - nStartPos);
+		}
+	}
 	return packageName;
+}
+
+CString AndroidPcToolDlg::getAndChekTopPackageName()
+{
+	// 执行命令获取当前置顶应用的包名
+	CString packageName = getTopPackageName();
+	if (packageName.IsEmpty()) {
+		m_editShowResut = _T("无法获取包名");
+		UpdateData(FALSE);
+	}
+	return packageName;
+
 }
 
 void AndroidPcToolDlg::OnBnClickedButtonTopPath()
 {
-	// 执行命令获取当前置顶应用的包名
-	std::string packageName = getTopPackageName();
-	if (packageName.empty()) {
-		AfxMessageBox(_T("No active application found"));
+	CString packageName = getAndChekTopPackageName();
+	if (packageName.IsEmpty()) {
 		return;
 	}
-	// 执行命令获取应用的安装路径
-	std::string command = "adb shell pm path " + packageName;
-	cmdAndShowEdit(command.c_str());
+	// 获取安装路径
+	CString pathCmd;
+	pathCmd.Format(L"adb shell pm path %s", packageName.GetString());
+	CStringA pathOutput = cmdAndShowEdit(CStringA(pathCmd));
+
+	// 解析路径
+	if (!pathOutput.IsEmpty()) {
+		m_editShowResut = CString(pathOutput);
+	}
+	else {
+		m_editShowResut = _T("无法获取安装路径");
+	}
+	UpdateData(FALSE);
 }
 
 
@@ -408,16 +501,14 @@ void AndroidPcToolDlg::OnBnClickedButtonOpenScrcpy()
 
 void AndroidPcToolDlg::OnBnClickedButtonTopApkVersion()
 {
-	// 执行命令获取当前置顶应用的包名
-	std::string packageName = getTopPackageName();
-	if (packageName.empty()) {
-		AfxMessageBox(_T("No active application found"));
+	CString packageName = getAndChekTopPackageName();
+	if (packageName.IsEmpty()) {
 		return;
 	}
 
-	// 执行命令获取应用的安装路径
-	std::string command = "adb shell dumpsys package " + packageName + " | findstr version";
-	cmdAndShowEdit(command.c_str());
+	// 执行命令获取应用的版本信息
+	std::string command = "adb shell dumpsys package " + CStringA(packageName) + " | findstr version";
+	cmdAndShowEdit(command.c_str(), true);
 }
 
 
@@ -485,4 +576,45 @@ void AndroidPcToolDlg::OnBnClickedButtonOpenJadx()
 void AndroidPcToolDlg::OnBnClickedButtonOpneFscapture()
 {
 	ShellExecuteA(NULL, "open", "FSCapture.exe", "FSCapture", "", SW_SHOWNORMAL);
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonAdbReboot()
+{
+	ShellExecuteA(NULL, "open", "adb", "", "reboot", SW_HIDE);
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonFastbootReboot()
+{
+	ShellExecuteA(NULL, "open", "fastboot", "", "reboot", SW_HIDE);
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonRootRemount()
+{
+	cmdAndShowEdit("adb root && adb remount", true);
+}
+
+
+void AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillAdb()
+{
+	cmdAndShowEdit("adb kill-server && taskkill / F / IM adb.exe");
+}
+
+
+void AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillJava()
+{
+	cmdAndShowEdit("taskkill / F / IM java.exe");
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonClearApp()
+{
+	CString packageName = getAndChekTopPackageName();
+	if (packageName.IsEmpty()) {
+		return;
+	}
+	std::string command = "adb shell pm clear " + CStringA(packageName);
+	cmdAndShowEdit(command.c_str(), true);
 }

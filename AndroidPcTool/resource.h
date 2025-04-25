@@ -29,6 +29,7 @@
 #define IDC_BUTTON_PULL_TOP_APK         1006
 #define IDC_BUTTON7                     1007
 #define IDC_EDIT6                       1007
+#define IDC_BUTTON_CLEAR_APP            1007
 #define IDC_BUTTON8                     1008
 #define IDC_EDIT7                       1008
 #define IDC_MFCMENUBUTTON1              1009
@@ -86,8 +87,11 @@
 #define IDC_BUTTON37                    1053
 #define IDC_BUTTON_OPNE_FSCapture       1053
 #define IDC_BUTTON38                    1054
+#define IDC_BUTTON_ADB_REBOOT           1054
 #define IDC_BUTTON39                    1055
+#define IDC_BUTTON_ROOT_REMOUNT         1055
 #define IDC_BUTTON40                    1056
+#define IDC_BUTTON_FASTBOOT_REBOOT      1056
 #define IDC_BUTTON41                    1057
 #define ID_32771                        32771
 #define ID_32772                        32772
@@ -134,7 +138,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32809
-#define _APS_NEXT_CONTROL_VALUE         1054
+#define _APS_NEXT_CONTROL_VALUE         1057
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
