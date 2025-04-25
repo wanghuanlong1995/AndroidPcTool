@@ -100,6 +100,8 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCMENUBUTTON_PULL_LOG, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonPullLog)
 	ON_COMMAND(ID_CONIF_PATH_AND_USE, &AndroidPcToolDlg::OnConifPathAndUse)
 	ON_BN_CLICKED(IDC_BUTTON_PULL_TOP_APK, &AndroidPcToolDlg::OnBnClickedButtonPullTopApk)
+	ON_BN_CLICKED(IDC_BUTTON_OPEN_JADX, &AndroidPcToolDlg::OnBnClickedButtonOpenJadx)
+	ON_BN_CLICKED(IDC_BUTTON_OPNE_FSCapture, &AndroidPcToolDlg::OnBnClickedButtonOpneFscapture)
 END_MESSAGE_MAP()
 
 
@@ -471,4 +473,16 @@ void AndroidPcToolDlg::OnConifPathAndUse()
 void AndroidPcToolDlg::OnBnClickedButtonPullTopApk()
 {
 	
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonOpenJadx()
+{
+	ShellExecuteA(NULL, "open", "jadx.exe", "", "", SW_SHOWNORMAL);
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonOpneFscapture()
+{
+	ShellExecuteA(NULL, "open", "FSCapture.exe", "FSCapture", "", SW_SHOWNORMAL);
 }

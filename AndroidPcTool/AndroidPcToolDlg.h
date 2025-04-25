@@ -73,4 +73,6 @@ public:
 	afx_msg void OnBnClickedMfcmenubuttonPullLog();
 	afx_msg void OnConifPathAndUse();
 	afx_msg void OnBnClickedButtonPullTopApk();
+	afx_msg void OnBnClickedButtonOpenJadx();
+	afx_msg void OnBnClickedButtonOpneFscapture();
 };
