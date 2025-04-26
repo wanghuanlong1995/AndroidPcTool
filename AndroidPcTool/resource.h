@@ -93,6 +93,9 @@
 #define IDC_BUTTON40                    1056
 #define IDC_BUTTON_FASTBOOT_REBOOT      1056
 #define IDC_BUTTON41                    1057
+#define IDC_CHECK2                      1057
+#define IDC_CHECK_IS_AUTO_INSTALL       1057
+#define IDC_BUTTON_INSTALL_APK          1058
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -131,14 +134,15 @@
 #define ID_32806                        32806
 #define ID_GET_PACK                     32807
 #define ID_CONIF_PATH_AND_USE           32808
+#define ID_32809                        32809
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        135
-#define _APS_NEXT_COMMAND_VALUE         32809
-#define _APS_NEXT_CONTROL_VALUE         1057
+#define _APS_NEXT_COMMAND_VALUE         32810
+#define _APS_NEXT_CONTROL_VALUE         1059
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

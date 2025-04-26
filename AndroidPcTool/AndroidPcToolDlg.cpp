@@ -59,6 +59,8 @@ AndroidPcToolDlg::AndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 	, m_isAutoOpenPullDir(TRUE)
 	, m_editShowResut(_T(""))
 	, m_isScrcpyTop(FALSE)
+	, m_editInputPath(_T(""))
+	, m_isAutoInstallApk(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -71,6 +73,9 @@ void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_SHOW_RESULT, m_editShowResut);
 	DDX_Check(pDX, IDC_CHECK_SCECPY_TOP, m_isScrcpyTop);
 	DDX_Control(pDX, IDC_RADIO_Common_Logs, m_radionCommonLogs);
+	DDX_Control(pDX, IDC_EDIT_INPUT, m_dragInputEdit);
+	DDX_Text(pDX, IDC_EDIT_INPUT, m_editInputPath);
+	DDX_Check(pDX, IDC_CHECK_IS_AUTO_INSTALL, m_isAutoInstallApk);
 }
 
 BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
@@ -108,6 +113,8 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCMENUBUTTON1, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillAdb)
 	ON_BN_CLICKED(IDC_MFCMENUBUTTON2, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillJava)
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR_APP, &AndroidPcToolDlg::OnBnClickedButtonClearApp)
+	ON_COMMAND(ID_32809, &AndroidPcToolDlg::OnHf)
+	ON_BN_CLICKED(IDC_BUTTON_INSTALL_APK, &AndroidPcToolDlg::OnBnClickedButtonInstallApk)
 END_MESSAGE_MAP()
 
 
@@ -344,85 +351,9 @@ CStringA ExtractInstallPath(const CStringA& output) {
 	}
 	return ("");
 }
-//
-//// 使用示例
-//CString GetAppInstallPath() {
-//	// 获取当前Activity信息
-//	CString adbCmd = _T("adb shell dumpsys activity top");
-//	CString output = cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"", true);
-//
-//	// 解析包名
-//	CString packageName = ExtractPackageName(output);
-//	if (packageName.IsEmpty()) {
-//		output = _T("无法获取包名");
-//		return output;
-//	}
-//
-//	// 获取安装路径
-//	CString pathCmd;
-//	pathCmd.Format(_T("adb shell pm path %s"), packageName);
-//	CString pathOutput = ExecuteCommand(pathCmd);
-//
-//	// 解析路径
-//	CString installPath = ExtractInstallPath(pathOutput);
-//	if (!installPath.IsEmpty()) {
-//		output = _T("安装路径: ") + installPath;
-//	}
-//	else {
-//		output = _T("无法获取安装路径");
-//	}
-//	return output;
-//}
-
 
 void AndroidPcToolDlg::OnBnClickedButtonTopActivity()
 {
-	//CoInitialize(NULL);
-
-	//// 创建管道和安全属性
-	//SECURITY_ATTRIBUTES sa;
-	//ZeroMemory(&sa, sizeof(sa));
-	//sa.nLength = sizeof(SECURITY_ATTRIBUTES);
-	//sa.lpSecurityDescriptor = NULL;
-	//sa.bInheritHandle = TRUE;
-
-	//// 创建管道
-	//HANDLE hRead, hWrite;
-	//CreatePipe(&hRead, &hWrite, &sa, 0);
-
-	//// 创建子进程执行命令
-	//STARTUPINFO si;
-	//PROCESS_INFORMATION pi;
-	//ZeroMemory(&si, sizeof(si));
-	//si.cb = sizeof(si);
-	//si.hStdError = hWrite;
-	//si.hStdOutput = hWrite;
-	//si.dwFlags |= STARTF_USESTDHANDLES;
-	//si.wShowWindow = SW_SHOWNORMAL;
-
-	//// 创建进程执行adb命令
-	//wchar_t cmd[] = L"adb shell dumpsys activity | grep “mResumedActivity”";
-	//BOOL bSuccess = CreateProcess(NULL, cmd, NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi);
-	//if (bSuccess) {
-	//	CloseHandle(hWrite); // 不再需要写入句柄
-	//	CHAR buffer[1024] = { 0 }; // 缓冲区来读取输出
-	//	DWORD bytesRead;
-	//	ReadFile(hRead, buffer, sizeof(buffer) - 1, &bytesRead, NULL); // 读取输出到缓冲区
-	//	CloseHandle(hRead); // 关闭读取句柄
-	//	CloseHandle(pi.hProcess); // 关闭进程句柄
-	//	CloseHandle(pi.hThread); // 关闭线程句柄
-	//	CoUninitialize(); // 反初始化COM库
-	//	CString strOutput = CA2T(buffer); // 将C风格字符串转换为CString对象
-
-	//	strOutput.Left(strOutput.Find(_T("\n\n")));
-	//	m_editShowResut = strOutput;
-	//	UpdateData(FALSE);
-	//}
-	//else {
-	//	// 处理错误情况，例如显示错误信息到编辑框或日志中
-	//	MessageBox(_T("无法执行ADB命令"), _T("错误"), MB_ICONERROR);
-	//}
-
 	cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"",true);
 }
 
@@ -617,4 +548,17 @@ void AndroidPcToolDlg::OnBnClickedButtonClearApp()
 	}
 	std::string command = "adb shell pm clear " + CStringA(packageName);
 	cmdAndShowEdit(command.c_str(), true);
+}
+
+
+void AndroidPcToolDlg::OnHf()
+{
+	openWeb("https://hf-mirror.com/");
+}
+
+void AndroidPcToolDlg::OnBnClickedButtonInstallApk()
+{
+	UpdateData(TRUE);
+	std::string command = "adb install " + CStringA(m_editInputPath);
+	cmdAndShowEdit(command.c_str());
 }

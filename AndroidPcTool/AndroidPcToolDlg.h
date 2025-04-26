@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include"DragEdit.h"
 
 // AndroidPcToolDlg 对话框
 class AndroidPcToolDlg : public CDialogEx
@@ -83,4 +83,12 @@ public:
 	afx_msg void OnBnClickedMfcmenubuttonKillAdb();
 	afx_msg void OnBnClickedMfcmenubuttonKillJava();
 	afx_msg void OnBnClickedButtonClearApp();
+	afx_msg void OnHf();
+	// 可以拓展输入的路径的编辑框
+	DragEdit m_dragInputEdit;
+	afx_msg void OnBnClickedButtonInstallApk();
+	// 可以拓展输入的路径的编辑框的文字
+	CString m_editInputPath;
+	// 是否拖拽后自动安装apk
+	BOOL m_isAutoInstallApk;
 };
