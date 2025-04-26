@@ -94,4 +94,9 @@ public:
 	afx_msg void OnBnClickedButtonApkInSettings();
 	// 设备目录选择
 	CComboBox m_comboBoxDeviceDir;
+	afx_msg void OnBnClickedButtonPush();
+	// 选择的设备中的目录
+	CString m_deviceDIr;
+	afx_msg void OnBnClickedButtonLs();
+	afx_msg void OnCbnSelchangeComboDeviceDir();
 };

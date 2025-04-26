@@ -61,6 +61,7 @@ AndroidPcToolDlg::AndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 	, m_isScrcpyTop(FALSE)
 	, m_editInputPath(_T(""))
 	, m_isAutoInstallApk(FALSE)
+	, m_deviceDIr(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -77,6 +78,7 @@ void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_INPUT, m_editInputPath);
 	DDX_Check(pDX, IDC_CHECK_IS_AUTO_INSTALL, m_isAutoInstallApk);
 	DDX_Control(pDX, IDC_COMBO_DEVICE_DIR, m_comboBoxDeviceDir);
+	DDX_CBString(pDX, IDC_COMBO_DEVICE_DIR, m_deviceDIr);
 }
 
 BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
@@ -117,6 +119,9 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_COMMAND(ID_32809, &AndroidPcToolDlg::OnHf)
 	ON_BN_CLICKED(IDC_BUTTON_INSTALL_APK, &AndroidPcToolDlg::OnBnClickedButtonInstallApk)
 	ON_BN_CLICKED(IDC_BUTTON8, &AndroidPcToolDlg::OnBnClickedButtonApkInSettings)
+	ON_BN_CLICKED(IDC_BUTTON_PUSH, &AndroidPcToolDlg::OnBnClickedButtonPush)
+	ON_BN_CLICKED(IDC_BUTTON_LS, &AndroidPcToolDlg::OnBnClickedButtonLs)
+	ON_CBN_SELCHANGE(IDC_COMBO_DEVICE_DIR, &AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir)
 END_MESSAGE_MAP()
 
 
@@ -158,10 +163,12 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 	m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher6/");
 	m_comboBoxDeviceDir.InsertString(0, L"system/app/Bluetooth/");
 	m_comboBoxDeviceDir.InsertString(0, L"system/framework/");
-	m_comboBoxDeviceDir.InsertString(0, L"system/pri-app/SystemUI/");
-	m_comboBoxDeviceDir.InsertString(0, L"system/pri-app/TeleService/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/SystemUI/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/TeleService/");
 	m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher3/");
-	m_comboBoxDeviceDir.InsertString(0, L"system/pri-app/Settings/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/Settings/");
+
+	m_comboBoxDeviceDir.SetCurSel(0);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -586,4 +593,33 @@ void AndroidPcToolDlg::OnBnClickedButtonApkInSettings()
 	}
 	std::string command = "adb shell am start -a android.settings.APPLICATION_DETAILS_SETTINGS -d package:" + CStringA(packageName);
 	cmdAndShowEdit(command.c_str());
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonPush()
+{
+	UpdateData(TRUE);
+	std::string command = "adb push " + CStringA(m_editInputPath)+" "+ CStringA(m_deviceDIr);
+	cmdAndShowEdit(command.c_str());
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonLs()
+{
+	Sleep(300);
+	UpdateData(TRUE);
+	std::string command = "adb shell ls -l "  + CStringA(m_deviceDIr);
+	cmdAndShowEdit(command.c_str());
+}
+
+UINT upDataLs(LPVOID lParam) {
+	Sleep(300);
+	AndroidPcToolDlg* pWnd = (AndroidPcToolDlg*)lParam;
+	pWnd->OnBnClickedButtonLs();
+	return 0;
+}
+
+void AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir()
+{
+	AfxBeginThread(upDataLs, (LPVOID)this);//启动新的线程去设置更新
 }
