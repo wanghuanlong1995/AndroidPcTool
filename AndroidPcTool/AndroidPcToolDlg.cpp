@@ -76,6 +76,7 @@ void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_INPUT, m_dragInputEdit);
 	DDX_Text(pDX, IDC_EDIT_INPUT, m_editInputPath);
 	DDX_Check(pDX, IDC_CHECK_IS_AUTO_INSTALL, m_isAutoInstallApk);
+	DDX_Control(pDX, IDC_COMBO_DEVICE_DIR, m_comboBoxDeviceDir);
 }
 
 BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
@@ -115,6 +116,7 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR_APP, &AndroidPcToolDlg::OnBnClickedButtonClearApp)
 	ON_COMMAND(ID_32809, &AndroidPcToolDlg::OnHf)
 	ON_BN_CLICKED(IDC_BUTTON_INSTALL_APK, &AndroidPcToolDlg::OnBnClickedButtonInstallApk)
+	ON_BN_CLICKED(IDC_BUTTON8, &AndroidPcToolDlg::OnBnClickedButtonApkInSettings)
 END_MESSAGE_MAP()
 
 
@@ -153,6 +155,13 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 
 	m_radionCommonLogs.SetCheck(TRUE);
 
+	m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher6/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/app/Bluetooth/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/framework/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/pri-app/SystemUI/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/pri-app/TeleService/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher3/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/pri-app/Settings/");
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -494,7 +503,12 @@ void AndroidPcToolDlg::OnConifPathAndUse()
 
 void AndroidPcToolDlg::OnBnClickedButtonPullTopApk()
 {
-	
+	OnBnClickedButtonTopPath();
+	m_editShowResut.Trim();  // 去除首尾空白字符
+	m_editShowResut.Replace(_T("\r\n"), _T(""));  // 去除换行符
+	m_editShowResut.Replace(_T("package:"), _T(""));// 去除多余的前缀
+	std::string command = "adb pull " + CStringA(m_editShowResut);
+	cmdAndShowEdit(command.c_str());
 }
 
 
@@ -560,5 +574,16 @@ void AndroidPcToolDlg::OnBnClickedButtonInstallApk()
 {
 	UpdateData(TRUE);
 	std::string command = "adb install " + CStringA(m_editInputPath);
+	cmdAndShowEdit(command.c_str());
+}
+
+
+void AndroidPcToolDlg::OnBnClickedButtonApkInSettings()
+{
+	CString packageName = getAndChekTopPackageName();
+	if (packageName.IsEmpty()) {
+		return;
+	}
+	std::string command = "adb shell am start -a android.settings.APPLICATION_DETAILS_SETTINGS -d package:" + CStringA(packageName);
 	cmdAndShowEdit(command.c_str());
 }

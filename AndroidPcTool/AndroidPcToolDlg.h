@@ -91,4 +91,7 @@ public:
 	CString m_editInputPath;
 	// 是否拖拽后自动安装apk
 	BOOL m_isAutoInstallApk;
+	afx_msg void OnBnClickedButtonApkInSettings();
+	// 设备目录选择
+	CComboBox m_comboBoxDeviceDir;
 };
