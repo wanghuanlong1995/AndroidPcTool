@@ -533,13 +533,13 @@ void AndroidPcToolDlg::OnBnClickedButtonOpneFscapture()
 
 void AndroidPcToolDlg::OnBnClickedButtonAdbReboot()
 {
-	ShellExecuteA(NULL, "open", "adb", "", "reboot", SW_HIDE);
+	ShellExecuteA(NULL, "open", "adb", "reboot", "", SW_HIDE);
 }
 
 
 void AndroidPcToolDlg::OnBnClickedButtonFastbootReboot()
 {
-	ShellExecuteA(NULL, "open", "fastboot", "", "reboot", SW_HIDE);
+	ShellExecuteA(NULL, "open", "fastboot", "reboot", "", SW_HIDE);
 }
 
 
