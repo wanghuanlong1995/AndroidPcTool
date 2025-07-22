@@ -122,6 +122,9 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_PUSH, &AndroidPcToolDlg::OnBnClickedButtonPush)
 	ON_BN_CLICKED(IDC_BUTTON_LS, &AndroidPcToolDlg::OnBnClickedButtonLs)
 	ON_CBN_SELCHANGE(IDC_COMBO_DEVICE_DIR, &AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir)
+	ON_COMMAND(ID_AI32810, &AndroidPcToolDlg::OnAiNamiSo)
+	ON_COMMAND(ID_getIpconfig, &AndroidPcToolDlg::Ongetipconfig)
+	ON_COMMAND(ID_32772, &AndroidPcToolDlg::OnSystemEnv)
 END_MESSAGE_MAP()
 
 
@@ -622,4 +625,23 @@ UINT upDataLs(LPVOID lParam) {
 void AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir()
 {
 	AfxBeginThread(upDataLs, (LPVOID)this);//启动新的线程去设置更新
+}
+
+
+void AndroidPcToolDlg::OnAiNamiSo()
+{
+	openWeb("https://www.n.cn/?fromsou=1");
+}
+
+
+void AndroidPcToolDlg::Ongetipconfig()
+{
+	std::string command = "ipconfig -all";
+	cmdAndShowEdit(command.c_str());
+}
+
+
+void AndroidPcToolDlg::OnSystemEnv()
+{
+	ShellExecute(NULL, _T("open"), _T("rundll32.exe"), _T("sysdm.cpl,EditEnvironmentVariables"), NULL, SW_SHOWNORMAL);
 }

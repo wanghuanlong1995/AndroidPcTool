@@ -99,4 +99,7 @@ public:
 	CString m_deviceDIr;
 	afx_msg void OnBnClickedButtonLs();
 	afx_msg void OnCbnSelchangeComboDeviceDir();
+	afx_msg void OnAiNamiSo();
+	afx_msg void Ongetipconfig();
+	afx_msg void OnSystemEnv();
 };

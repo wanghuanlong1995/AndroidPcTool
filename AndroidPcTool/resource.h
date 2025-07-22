@@ -100,6 +100,7 @@
 #define IDC_BUTTON_PUSH                 1061
 #define IDC_BUTTON_LS                   1062
 #define IDC_STATIC_FILE_MD5             1063
+#define IDC_BTN_LONG_HUN                1064
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -139,14 +140,16 @@
 #define ID_GET_PACK                     32807
 #define ID_CONIF_PATH_AND_USE           32808
 #define ID_32809                        32809
+#define ID_AI32810                      32810
+#define ID_getIpconfig                  32811
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        135
-#define _APS_NEXT_COMMAND_VALUE         32810
-#define _APS_NEXT_CONTROL_VALUE         1064
+#define _APS_NEXT_COMMAND_VALUE         32812
+#define _APS_NEXT_CONTROL_VALUE         1065
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
