@@ -4,6 +4,7 @@
 
 #pragma once
 #include"DragEdit.h"
+#include "WideCharUtils.h"
 
 // AndroidPcToolDlg 对话框
 class AndroidPcToolDlg : public CDialogEx

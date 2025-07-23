@@ -12,7 +12,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include <string>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -73,11 +73,11 @@ AndroidPcToolDlg::AndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_CHECK_TOP_SELFT, m_isTopSelft);
+	DDX_Check(pDX, IDC_CHECK_TOP_SELF, m_isTopSelft);
 	DDX_Check(pDX, IDC_CHECK_AUTO_OPEN_DIR, m_isAutoOpenPullDir);
 	DDX_Text(pDX, IDC_EDIT_SHOW_RESULT, m_editShowResut);
-	DDX_Check(pDX, IDC_CHECK_SCECPY_TOP, m_isScrcpyTop);
-	DDX_Control(pDX, IDC_RADIO_Common_Logs, m_radionCommonLogs);
+	DDX_Check(pDX, IDC_CHECK_SCE_CPY_TOP, m_isScrcpyTop);
+	DDX_Control(pDX, IDC_RADIO_COMMON_LOG, m_radionCommonLogs);
 	DDX_Control(pDX, IDC_EDIT_INPUT, m_dragInputEdit);
 	DDX_Text(pDX, IDC_EDIT_INPUT, m_editInputPath);
 	DDX_Check(pDX, IDC_CHECK_IS_AUTO_INSTALL, m_isAutoInstallApk);
@@ -90,20 +90,21 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_CHECK_TOP_SELFT, &AndroidPcToolDlg::OnBnClickedCheckTopSelft)
+	ON_BN_CLICKED(IDC_CHECK_TOP_SELF, &AndroidPcToolDlg::OnBnClickedCheckTopSelft)
 	ON_BN_CLICKED(IDC_BUTTON_TOP_PATH, &AndroidPcToolDlg::OnBnClickedButtonTopPath)
-	ON_BN_CLICKED(IDC_CHECK_SCECPY_TOP, &AndroidPcToolDlg::OnBnClickedCheckScecpyTop)
+	ON_BN_CLICKED(IDC_CHECK_SCE_CPY_TOP, &AndroidPcToolDlg::OnBnClickedCheckScecpyTop)
 	ON_BN_CLICKED(IDC_BUTTON_TOP_APK_VERSION, &AndroidPcToolDlg::OnBnClickedButtonTopApkVersion)
-	ON_BN_CLICKED(IDC_MFCMENUBUTTON_PULL_LOG, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonPullLog)
+	ON_BN_CLICKED(IDC_MFC_MENUBUTTON_PULL_LOG, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonPullLog)
 	ON_COMMAND(ID_CONIF_PATH_AND_USE, &AndroidPcToolDlg::OnConifPathAndUse)
 	ON_BN_CLICKED(IDC_BUTTON_PULL_TOP_APK, &AndroidPcToolDlg::OnBnClickedButtonPullTopApk)
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR_APP, &AndroidPcToolDlg::OnBnClickedButtonClearApp)
 	ON_BN_CLICKED(IDC_BUTTON_INSTALL_APK, &AndroidPcToolDlg::OnBnClickedButtonInstallApk)
-	ON_BN_CLICKED(IDC_BUTTON8, &AndroidPcToolDlg::OnBnClickedButtonApkInSettings)
+	ON_BN_CLICKED(IDC_BUTTON_ENTER_SETTINGS, &AndroidPcToolDlg::OnBnClickedButtonApkInSettings)
 	ON_BN_CLICKED(IDC_BUTTON_PUSH, &AndroidPcToolDlg::OnBnClickedButtonPush)
 	ON_BN_CLICKED(IDC_BUTTON_LS, &AndroidPcToolDlg::OnBnClickedButtonLs)
 	ON_CBN_SELCHANGE(IDC_COMBO_DEVICE_DIR, &AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir)
-	ON_COMMAND_RANGE(IDC_BUTTON1, 52815,&AndroidPcToolDlg::OnOpenWeb)
+	ON_COMMAND_RANGE(10, 52815,&AndroidPcToolDlg::OnOpenWeb)
+	ON_COMMAND_RANGE(10, 52815,&AndroidPcToolDlg::OnExeShell)
 
 END_MESSAGE_MAP()
 
@@ -243,25 +244,6 @@ void AndroidPcToolDlg::setViewHide(int viewId)
 	GetDlgItem(viewId)->ShowWindow(SW_HIDE);
 }
 
-
-//std::string ExtractHash(const std::string& output) {
-//	std::istringstream iss(output);
-//	std::string line;
-//	int lineCount = 0;
-//	while (std::getline(iss, line)) {
-//		if (lineCount == 2) { // 第二行数据行（第一行标题，第二行分隔线）
-//			std::istringstream lineStream(line);
-//			std::string algorithm, hash, path;
-//			lineStream >> algorithm >> hash; // 提取Algorithm和Hash列
-//			if (algorithm == "MD5") {
-//				return hash; // 返回哈希值，如F5C59E28E9F300D89E6C0CF4B166E76B
-//			}
-//		}
-//		lineCount++;
-//	}
-//	return ""; // 未找到时返回空
-//}
-
 CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd,bool isNeedShowDefalutMsg)
 {
 	FILE* pipe;
@@ -299,6 +281,7 @@ CStringA AndroidPcToolDlg::cmdAndShowTopApkEdit(CStringA cmd)
 
 void AndroidPcToolDlg::OnExeShell(UINT nID)
 {
+	CAboutDlg dlgAbout;
 	// 根据不同的ID执行操作
 	switch (nID)
 	{
@@ -306,7 +289,7 @@ void AndroidPcToolDlg::OnExeShell(UINT nID)
 		// 显示当前活动的顶部信息
 		cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"", true);
 		break;
-	case IDC_BUTTON_OPEN_SCRCPY:
+	case IDC_BUTTON_OPEN_SCR_CPY:
 		// 执行scrcpy脚本以显示设备屏幕
 		ShellExecuteA(NULL, "open", "scrcpy-noconsole.vbs", "", "scrcpy-win64-v3.2", SW_SHOWNORMAL);
 		break;
@@ -330,11 +313,11 @@ void AndroidPcToolDlg::OnExeShell(UINT nID)
 		// 以root权限重新挂载设备文件系统
 		cmdAndShowEdit("adb root && adb remount", true);
 		break;
-	case IDC_MFCMENUBUTTON1:
+	case IDC_MFCMENUBUTTON_KILL_ABD:
 		// 杀死ADB服务器进程和所有ADB客户端进程
 		cmdAndShowEdit("adb kill-server && taskkill / F / IM adb.exe");
 		break;
-	case IDC_MFCMENUBUTTON2:
+	case IDC_MFCMENUBUTTON_KILL_JAVA:
 		// 杀死所有Java进程
 		cmdAndShowEdit("taskkill / F / IM java.exe");
 		break;
@@ -344,6 +327,10 @@ void AndroidPcToolDlg::OnExeShell(UINT nID)
 		break;
 	case ID_getIpconfig:
         cmdAndShowEdit("ipconfig -all");
+		break;
+	case IDM_ABOUTBOX:
+	
+		dlgAbout.DoModal();
 		break;
 	default:
 		break;
@@ -649,31 +636,8 @@ void AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir()
 //	ShellExecuteA(NULL, "open", "adb", "reboot -p", "", SW_HIDE);
 //}
 
-BOOL IsGBK(const BYTE* data, int length) {
-	int wideLen = MultiByteToWideChar(CP_ACP, 0, (LPCCH)data, length, NULL, 0);
-	return (wideLen > 0);
-}
-BOOL IsUTF8(const BYTE* data, int length) {
-	int wideLen = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)data, length, NULL, 0);
-	return (wideLen > 0);
-}
 
-std::string ConvertGBKToUTF8(const std::string& gbkStr) {
-	// Step 1: GBK → Unicode (UTF-16)
-	int wlen = MultiByteToWideChar(936, 0, gbkStr.c_str(), -1, nullptr, 0);
-	wchar_t* wbuf = new wchar_t[wlen];
-	MultiByteToWideChar(936, 0, gbkStr.c_str(), -1, wbuf, wlen);
 
-	// Step 2: Unicode → UTF-8
-	int ulen = WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, nullptr, 0, nullptr, nullptr);
-	char* ubuf = new char[ulen];
-	WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, ubuf, ulen, nullptr, nullptr);
-
-	std::string utf8Str(ubuf);
-	delete[] wbuf;
-	delete[] ubuf;
-	return utf8Str;
-}
 
 
 //void AndroidPcToolDlg::OnBnClickedButtonPull()
