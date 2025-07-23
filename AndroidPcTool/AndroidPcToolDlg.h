@@ -77,4 +77,8 @@ public:
 	CString m_deviceDIr;
 	afx_msg void OnBnClickedButtonLs();
 	afx_msg void OnCbnSelchangeComboDeviceDir();
+    // 拖拽之后文件的md5值
+    CString m_StringMd5;
+
+    void setStringMd5();
 };

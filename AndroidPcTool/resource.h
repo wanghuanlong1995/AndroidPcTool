@@ -101,6 +101,10 @@
 #define IDC_BUTTON_LS                   1062
 #define IDC_STATIC_FILE_MD5             1063
 #define IDC_BTN_LONG_HUN                1064
+#define IDC_BUTTON_remount              1065
+#define IDC_BUTTON_p                    1066
+#define IDC_BUTTON_STOP_AND_START       1067
+#define IDC_BUTTON_bootloader           1068
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -147,6 +151,12 @@
 #define ID_HF                           32814
 #define ID_HENLEYLEE                    32815
 #define ID_LANHU_UI                     32816
+#define ID_32812                        31812
+#define ID_32813                        31813
+#define ID_32814                        31814
+#define ID_32815                        31815
+#define ID_32810                        31816
+#define ID_BuildBP_EXCLE                31817
 
 // Next default values for new objects
 // 

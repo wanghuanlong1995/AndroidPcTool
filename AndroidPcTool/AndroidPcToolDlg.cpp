@@ -10,6 +10,9 @@
 #include "afxdialogex.h"
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <iostream>
+#include <string>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -62,6 +65,7 @@ AndroidPcToolDlg::AndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 	, m_editInputPath(_T(""))
 	, m_isAutoInstallApk(FALSE)
 	, m_deviceDIr(_T(""))
+	, m_StringMd5(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -79,6 +83,7 @@ void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_IS_AUTO_INSTALL, m_isAutoInstallApk);
 	DDX_Control(pDX, IDC_COMBO_DEVICE_DIR, m_comboBoxDeviceDir);
 	DDX_CBString(pDX, IDC_COMBO_DEVICE_DIR, m_deviceDIr);
+	DDX_Text(pDX, IDC_STATIC_FILE_MD5, m_StringMd5);
 }
 
 BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
@@ -138,13 +143,18 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 
 	m_radionCommonLogs.SetCheck(TRUE);
 
-	m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher6/");
-	m_comboBoxDeviceDir.InsertString(0, L"system/app/Bluetooth/");
-	m_comboBoxDeviceDir.InsertString(0, L"system/framework/");
-	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/SystemUI/");
-	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/TeleService/");
-	m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher3/");
-	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/Settings/");
+	m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher6");
+	m_comboBoxDeviceDir.InsertString(0, L"system/app/Bluetooth");
+	m_comboBoxDeviceDir.InsertString(0, L"system/framework");
+	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/SystemUI");
+	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/TeleService");
+	m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher3");
+	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/Settings");
+	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/ZuiSettings");
+	m_comboBoxDeviceDir.InsertString(0, L"system/priv-app/ZuiWallpaperSetting");
+	m_comboBoxDeviceDir.InsertString(0, L"sdcard/Pictures/screenrecorder");
+	m_comboBoxDeviceDir.InsertString(0, L"sdcard/debuglogger");
+	m_comboBoxDeviceDir.InsertString(0, L"sdcard/log");
 
 	m_comboBoxDeviceDir.SetCurSel(0);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -232,6 +242,25 @@ void AndroidPcToolDlg::setViewHide(int viewId)
 {
 	GetDlgItem(viewId)->ShowWindow(SW_HIDE);
 }
+
+
+//std::string ExtractHash(const std::string& output) {
+//	std::istringstream iss(output);
+//	std::string line;
+//	int lineCount = 0;
+//	while (std::getline(iss, line)) {
+//		if (lineCount == 2) { // 第二行数据行（第一行标题，第二行分隔线）
+//			std::istringstream lineStream(line);
+//			std::string algorithm, hash, path;
+//			lineStream >> algorithm >> hash; // 提取Algorithm和Hash列
+//			if (algorithm == "MD5") {
+//				return hash; // 返回哈希值，如F5C59E28E9F300D89E6C0CF4B166E76B
+//			}
+//		}
+//		lineCount++;
+//	}
+//	return ""; // 未找到时返回空
+//}
 
 CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd,bool isNeedShowDefalutMsg)
 {
@@ -543,6 +572,12 @@ void AndroidPcToolDlg::OnBnClickedButtonInstallApk()
 	cmdAndShowEdit(command.c_str());
 }
 
+void AndroidPcToolDlg::setStringMd5()
+{
+	UpdateData(TRUE);
+	std::string command = "powershell Get-FileHash -Path " + CStringA(m_editInputPath) + " -Algorithm MD5";
+	cmdAndShowEdit(command.c_str());
+}
 
 void AndroidPcToolDlg::OnBnClickedButtonApkInSettings()
 {
@@ -567,6 +602,7 @@ void AndroidPcToolDlg::OnBnClickedButtonLs()
 {
 	Sleep(300);
 	UpdateData(TRUE);
+	Sleep(100);
 	std::string command = "adb shell ls -l "  + CStringA(m_deviceDIr);
 	cmdAndShowEdit(command.c_str());
 }
@@ -580,5 +616,85 @@ UINT upDataLs(LPVOID lParam) {
 
 void AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir()
 {
-	AfxBeginThread(upDataLs, (LPVOID)this);//启动新的线程去设置更新手机目录
+	AfxBeginThread(upDataLs, (LPVOID)this);//启动新的线程去设置更新
 }
+//
+//void AndroidPcToolDlg::OnBuildbpExcle()
+//{
+//	openWeb("https://thundersoft.feishu.cn/wiki/EQtHwEoAeiQhRBk60oZcCZJ9nQh");
+//}
+//
+//void AndroidPcToolDlg::On32812()
+//{
+//	openWeb("https://10.178.1.16:801/wh_wt/PeridotV/");
+//}
+//
+//void AndroidPcToolDlg::On32813()
+//{
+//	openWeb("https://thundersoft.feishu.cn/wiki/UnItwsk1Ri9wAekdGKsc9ipwnic");
+//}
+//
+//void AndroidPcToolDlg::On32814()
+//{
+//	openWeb("https://tbjira.lenovo.com/issue/issues/?jql=project%20%3D%20PERIDOTV%20AND%20issuetype%20%3D%20Bug%20AND%20status%20in%20(New%2C%20%22In%20Progress%22%2C%20Reopened%2C%20WaitForInfo)%20AND%20Importance%20in%20(%22Critical(S2)%22%2C%20%22Blocker(S1)%22%2C%20%22Major(S3)%22)%20AND%20SKU%20in%20(WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WiFi-PRC%2C%20WiFi-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WiFi-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC%2C%20WIFI-PRC)%20AND%20Severity%20in%20(%223%22%2C%20%224%22%2C%20%225%22)%20AND%20assignee%20in%20(liuhuan28%2C%20zhangxl74%2C%20majl10%2C%20ztkj4_tmp%2C%20zhucl5%2C%20huangyang17%2C%20xiapf2%2C%20wangpeng88%2C%20shugan2%2C%20huangyk5%2C%20wangkui2%2C%20yanxiao4%2C%20liujian43)%20AND%20assignee%20%3D%20zhangxl74%20ORDER%20BY%20key%20ASC");
+//}
+//
+//void AndroidPcToolDlg::On32815()
+//{
+//	openWeb("https://thundersoft.feishu.cn/wiki/D259wHuS3i36XckSlNzcBtG2nrt?office_edit=1");
+//}
+//
+//void AndroidPcToolDlg::OnBnClickedButtonp()
+//{
+//	ShellExecuteA(NULL, "open", "adb", "reboot -p", "", SW_HIDE);
+//}
+
+BOOL IsGBK(const BYTE* data, int length) {
+	int wideLen = MultiByteToWideChar(CP_ACP, 0, (LPCCH)data, length, NULL, 0);
+	return (wideLen > 0);
+}
+BOOL IsUTF8(const BYTE* data, int length) {
+	int wideLen = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)data, length, NULL, 0);
+	return (wideLen > 0);
+}
+
+std::string ConvertGBKToUTF8(const std::string& gbkStr) {
+	// Step 1: GBK → Unicode (UTF-16)
+	int wlen = MultiByteToWideChar(936, 0, gbkStr.c_str(), -1, nullptr, 0);
+	wchar_t* wbuf = new wchar_t[wlen];
+	MultiByteToWideChar(936, 0, gbkStr.c_str(), -1, wbuf, wlen);
+
+	// Step 2: Unicode → UTF-8
+	int ulen = WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, nullptr, 0, nullptr, nullptr);
+	char* ubuf = new char[ulen];
+	WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, ubuf, ulen, nullptr, nullptr);
+
+	std::string utf8Str(ubuf);
+	delete[] wbuf;
+	delete[] ubuf;
+	return utf8Str;
+}
+
+
+//void AndroidPcToolDlg::OnBnClickedButtonPull()
+//{
+//	UpdateData(TRUE);
+//	CFolderPickerDialog folderDlg; // 创建目录选择对话框
+//	if (folderDlg.DoModal() == IDOK) { // 显示对话框并等待用户操作
+//		CString folderPath = folderDlg.GetFolderPath(); // 获取选择的路径
+//		//AfxMessageBox(folderPath); // 示例：显示路径（实际应用中可替换为其他逻辑）
+//		std::string pcPathTemp = CStringA(folderPath);
+//		std::replace(pcPathTemp.begin(), pcPathTemp.end(), '\\', '/');
+//		//std::string pcPath = ConvertGBKToUTF8(pcPathTemp);
+//
+//		std::string command = "adb pull " + CStringA(m_deviceDIr) + " " + "\""+pcPathTemp.c_str() + "\"";
+//		cmdAndShowEdit(command.c_str());
+//	}
+//}
+//
+//void AndroidPcToolDlg::OnBnClickedButtonStopAndStart()
+//{
+//	cmdAndShowEdit("adb shell stop && adb shell start");
+//
+//	MessageBox(_T("重启成功"));
+//}
