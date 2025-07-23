@@ -86,45 +86,20 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_CHECK_TOP_SELFT, &AndroidPcToolDlg::OnBnClickedCheckTopSelft)
-	ON_COMMAND(ID_WX_CODE, &AndroidPcToolDlg::OnWxCode)
-	ON_COMMAND(ID_GITHUP, &AndroidPcToolDlg::OnGithup)
-	ON_COMMAND(ID_GITCODE, &AndroidPcToolDlg::OnGitcode)
-	ON_COMMAND(ID_GITEE, &AndroidPcToolDlg::OnGitee)
-	ON_COMMAND(ID_UI_ALIBABA_PNG, &AndroidPcToolDlg::OnUiAlibabaPng)
-	ON_COMMAND(ID_CAINIAO, &AndroidPcToolDlg::OnCainiao)
-	ON_COMMAND(ID_AI_GITCODE_DEEPSEEK, &AndroidPcToolDlg::OnAiGitcodeDeepseek)
-	ON_COMMAND(ID_TO_ICON, &AndroidPcToolDlg::OnToIcon)
-	ON_BN_CLICKED(IDC_BUTTON_TOP_ACTIVITY, &AndroidPcToolDlg::OnBnClickedButtonTopActivity)
 	ON_BN_CLICKED(IDC_BUTTON_TOP_PATH, &AndroidPcToolDlg::OnBnClickedButtonTopPath)
-	ON_BN_CLICKED(IDC_BUTTON_OPEN_SCRCPY, &AndroidPcToolDlg::OnBnClickedButtonOpenScrcpy)
 	ON_BN_CLICKED(IDC_CHECK_SCECPY_TOP, &AndroidPcToolDlg::OnBnClickedCheckScecpyTop)
 	ON_BN_CLICKED(IDC_BUTTON_TOP_APK_VERSION, &AndroidPcToolDlg::OnBnClickedButtonTopApkVersion)
-	ON_COMMAND(ID_PICTURE_COMPRESS, &AndroidPcToolDlg::OnPictureCompress)
-	ON_COMMAND(ID_Android_CODE, &AndroidPcToolDlg::OnAndroidCode)
-	ON_COMMAND(ID_Mp4ToMp3, &AndroidPcToolDlg::OnMp4tomp3)
-	ON_COMMAND(ID_LanHU_UI, &AndroidPcToolDlg::OnLanhuUi)
-	ON_COMMAND(ID_henleylee, &AndroidPcToolDlg::Onhenleylee)
-	ON_COMMAND(ID_GET_PACK, &AndroidPcToolDlg::OnGetPack)
 	ON_BN_CLICKED(IDC_MFCMENUBUTTON_PULL_LOG, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonPullLog)
 	ON_COMMAND(ID_CONIF_PATH_AND_USE, &AndroidPcToolDlg::OnConifPathAndUse)
 	ON_BN_CLICKED(IDC_BUTTON_PULL_TOP_APK, &AndroidPcToolDlg::OnBnClickedButtonPullTopApk)
-	ON_BN_CLICKED(IDC_BUTTON_OPEN_JADX, &AndroidPcToolDlg::OnBnClickedButtonOpenJadx)
-	ON_BN_CLICKED(IDC_BUTTON_OPNE_FSCapture, &AndroidPcToolDlg::OnBnClickedButtonOpneFscapture)
-	ON_BN_CLICKED(IDC_BUTTON_ADB_REBOOT, &AndroidPcToolDlg::OnBnClickedButtonAdbReboot)
-	ON_BN_CLICKED(IDC_BUTTON_FASTBOOT_REBOOT, &AndroidPcToolDlg::OnBnClickedButtonFastbootReboot)
-	ON_BN_CLICKED(IDC_BUTTON_ROOT_REMOUNT, &AndroidPcToolDlg::OnBnClickedButtonRootRemount)
-	ON_BN_CLICKED(IDC_MFCMENUBUTTON1, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillAdb)
-	ON_BN_CLICKED(IDC_MFCMENUBUTTON2, &AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillJava)
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR_APP, &AndroidPcToolDlg::OnBnClickedButtonClearApp)
-	ON_COMMAND(ID_32809, &AndroidPcToolDlg::OnHf)
 	ON_BN_CLICKED(IDC_BUTTON_INSTALL_APK, &AndroidPcToolDlg::OnBnClickedButtonInstallApk)
 	ON_BN_CLICKED(IDC_BUTTON8, &AndroidPcToolDlg::OnBnClickedButtonApkInSettings)
 	ON_BN_CLICKED(IDC_BUTTON_PUSH, &AndroidPcToolDlg::OnBnClickedButtonPush)
 	ON_BN_CLICKED(IDC_BUTTON_LS, &AndroidPcToolDlg::OnBnClickedButtonLs)
 	ON_CBN_SELCHANGE(IDC_COMBO_DEVICE_DIR, &AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir)
-	ON_COMMAND(ID_AI32810, &AndroidPcToolDlg::OnAiNamiSo)
-	ON_COMMAND(ID_getIpconfig, &AndroidPcToolDlg::Ongetipconfig)
-	ON_COMMAND(ID_32772, &AndroidPcToolDlg::OnSystemEnv)
+	ON_COMMAND_RANGE(IDC_BUTTON1, 52815,&AndroidPcToolDlg::OnOpenWeb)
+
 END_MESSAGE_MAP()
 
 
@@ -292,51 +267,132 @@ CStringA AndroidPcToolDlg::cmdAndShowTopApkEdit(CStringA cmd)
 	return CStringA();
 }
 
-void AndroidPcToolDlg::OnWxCode()
+
+void AndroidPcToolDlg::OnExeShell(UINT nID)
 {
-	openWeb("https://git.weixin.qq.com/explore");
+	// 根据不同的ID执行操作
+	switch (nID)
+	{
+	case IDC_BUTTON_TOP_ACTIVITY:
+		// 显示当前活动的顶部信息
+		cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"", true);
+		break;
+	case IDC_BUTTON_OPEN_SCRCPY:
+		// 执行scrcpy脚本以显示设备屏幕
+		ShellExecuteA(NULL, "open", "scrcpy-noconsole.vbs", "", "scrcpy-win64-v3.2", SW_SHOWNORMAL);
+		break;
+	case IDC_BUTTON_OPEN_JADX:
+		// 打开JADX反编译工具
+		ShellExecuteA(NULL, "open", "jadx.exe", "", "", SW_SHOWNORMAL);
+		break;
+	case IDC_BUTTON_OPNE_FSCapture:
+		// 打开FSCapture屏幕捕捉工具
+		ShellExecuteA(NULL, "open", "FSCapture.exe", "FSCapture", "", SW_SHOWNORMAL);
+		break;
+	case IDC_BUTTON_ADB_REBOOT:
+		// 通过ADB命令重启设备
+		ShellExecuteA(NULL, "open", "adb", "reboot", "", SW_HIDE);
+		break;
+	case IDC_BUTTON_FASTBOOT_REBOOT:
+		// 通过Fastboot命令重启设备
+		ShellExecuteA(NULL, "open", "fastboot", "reboot", "", SW_HIDE);
+		break;
+	case IDC_BUTTON_ROOT_REMOUNT:
+		// 以root权限重新挂载设备文件系统
+		cmdAndShowEdit("adb root && adb remount", true);
+		break;
+	case IDC_MFCMENUBUTTON1:
+		// 杀死ADB服务器进程和所有ADB客户端进程
+		cmdAndShowEdit("adb kill-server && taskkill / F / IM adb.exe");
+		break;
+	case IDC_MFCMENUBUTTON2:
+		// 杀死所有Java进程
+		cmdAndShowEdit("taskkill / F / IM java.exe");
+		break;
+	case ID_OPEN_ENV:
+		// 打开环境变量编辑界面
+		ShellExecute(NULL, _T("open"), _T("rundll32.exe"), _T("sysdm.cpl,EditEnvironmentVariables"), NULL, SW_SHOWNORMAL);
+		break;
+	case ID_getIpconfig:
+        cmdAndShowEdit("ipconfig -all");
+		break;
+	default:
+		break;
+	}
 }
 
-
-void AndroidPcToolDlg::OnGithup()
+void AndroidPcToolDlg::OnOpenWeb(UINT nID)
 {
-	openWeb("https://github.com/crazycodeboy/RNStudyNotes");
-}
-
-
-void AndroidPcToolDlg::OnGitcode()
-{
-	openWeb("https://gitcode.com/");
-}
-
-
-void AndroidPcToolDlg::OnGitee()
-{
-	openWeb("https://gitee.com/");
-}
-
-
-void AndroidPcToolDlg::OnUiAlibabaPng()
-{
-	openWeb("https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.5&type=2");
-}
-
-
-void AndroidPcToolDlg::OnCainiao()
-{
-	openWeb("https://www.runoob.com/w3cnote_genre/android-advance");
-}
-
-
-void AndroidPcToolDlg::OnAiGitcodeDeepseek()
-{
-	openWeb("https://gitcode.com/ai/?utm_source=sidebar");
-}
-
-
-void AndroidPcToolDlg::OnToIcon()
-{
-	openWeb("https://convertio.co/zh/");
+	// 根据不同的ID打开对应的网页
+	switch (nID)
+	{
+	case ID_WX_CODE:
+		// 打开微信探索页面
+		openWeb("https://git.weixin.qq.com/explore");
+		break;
+	case ID_GITHUP:
+		// 打开GitHub上的RNStudyNotes项目页面
+		openWeb("https://github.com/crazycodeboy/RNStudyNotes");
+		break;
+	case ID_GITCODE:
+		// 打开Gitcode首页
+		openWeb("https://gitcode.com/");
+		break;
+	case ID_GITEE:
+		// 打开Gitee首页
+		openWeb("https://gitee.com/");
+		break;
+	case ID_UI_ALIBABA_PNG:
+		// 打开阿里云图标库
+		openWeb("https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.5&type=2");
+		break;
+	case ID_CAINIAO:
+		// 打开菜鸟教程的Android高级编程页面
+		openWeb("https://www.runoob.com/w3cnote_genre/android-advance");
+		break;
+	case ID_AI_GITCODE_DEEPSEEK:
+		// 打开Gitcode的AI页面
+		openWeb("https://gitcode.com/ai/?utm_source=sidebar");
+		break;
+	case ID_HF:
+		// 打开HF镜像站点
+		openWeb("https://hf-mirror.com/");
+		break;
+	case ID_HENLEYLEE:
+		// 打开Henleylee的GitHub主页
+		openWeb("https://henleylee.github.io/");
+		break;
+	case ID_TO_ICON:
+		// 打开在线文件转换工具网站
+		openWeb("https://convertio.co/zh/");
+		break;
+	case ID_PICTURE_COMPRESS:
+		// 打开图片压缩工具网站
+		openWeb("https://tinypng.com/");
+		break;
+	case ID_Android_CODE:
+		// 打开Android源代码资源网站
+		openWeb("https://www.androidos.net.cn/sourcecode");
+		break;
+	case ID_Mp4ToMp3:
+		// 打开MP4转MP3工具网站
+		openWeb("https://mp4tomp3.org/");
+		break;
+	case ID_LANHU_UI:
+		// 打开兰湖设计协作平台网站
+		openWeb("https://lanhuapp.com/dashboard/#/item");
+		break;
+	case ID_GET_PACK:
+		// 打开获取打包资源教程博客
+		openWeb("https://blog.csdn.net/c10WTiybQ1Ye3/article/details/78098632");
+		break;
+	case ID_AI_NAMI_SO:
+		// 打开AI智能搜索工具网站
+		openWeb("https://www.n.cn/?fromsou=1");
+		break;
+	default:
+		break;
+	}
 }
 
 // 提取包名
@@ -369,11 +425,6 @@ CStringA ExtractInstallPath(const CStringA& output) {
 		return output.Mid(nPos + 1).Trim();
 	}
 	return ("");
-}
-
-void AndroidPcToolDlg::OnBnClickedButtonTopActivity()
-{
-	cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"",true);
 }
 
 CString getTopPackageName()
@@ -441,14 +492,6 @@ void AndroidPcToolDlg::OnBnClickedButtonTopPath()
 	UpdateData(FALSE);
 }
 
-
-void AndroidPcToolDlg::OnBnClickedButtonOpenScrcpy()
-{
-	ShellExecuteA(NULL, "open", "scrcpy-noconsole.vbs", "", "scrcpy-win64-v3.2", SW_SHOWNORMAL);
-}
-
-
-
 void AndroidPcToolDlg::OnBnClickedButtonTopApkVersion()
 {
 	CString packageName = getAndChekTopPackageName();
@@ -461,55 +504,16 @@ void AndroidPcToolDlg::OnBnClickedButtonTopApkVersion()
 	cmdAndShowEdit(command.c_str(), true);
 }
 
-
-void AndroidPcToolDlg::OnPictureCompress()
-{
-	openWeb("https://tinypng.com/");
-}
-
-
-void AndroidPcToolDlg::OnAndroidCode()
-{
-	openWeb("https://www.androidos.net.cn/sourcecode");
-}
-
-
-void AndroidPcToolDlg::OnMp4tomp3()
-{
-	openWeb("https://mp4tomp3.org/");
-}
-
-
-void AndroidPcToolDlg::OnLanhuUi()
-{
-	openWeb("https://lanhuapp.com/dashboard/#/item");
-}
-
-
-void AndroidPcToolDlg::Onhenleylee()
-{
-	openWeb("https://henleylee.github.io/");
-}
-
-
-void AndroidPcToolDlg::OnGetPack()
-{
-	openWeb("https://blog.csdn.net/c10WTiybQ1Ye3/article/details/78098632");
-}
-
-
 void AndroidPcToolDlg::OnBnClickedMfcmenubuttonPullLog()
 {
 	//
 }
-
 
 void AndroidPcToolDlg::OnConifPathAndUse()
 {
 	PathAndUseConfigDlg dlg;
 	dlg.DoModal();
 }
-
 
 void AndroidPcToolDlg::OnBnClickedButtonPullTopApk()
 {
@@ -521,49 +525,6 @@ void AndroidPcToolDlg::OnBnClickedButtonPullTopApk()
 	cmdAndShowEdit(command.c_str());
 }
 
-
-void AndroidPcToolDlg::OnBnClickedButtonOpenJadx()
-{
-	ShellExecuteA(NULL, "open", "jadx.exe", "", "", SW_SHOWNORMAL);
-}
-
-
-void AndroidPcToolDlg::OnBnClickedButtonOpneFscapture()
-{
-	ShellExecuteA(NULL, "open", "FSCapture.exe", "FSCapture", "", SW_SHOWNORMAL);
-}
-
-
-void AndroidPcToolDlg::OnBnClickedButtonAdbReboot()
-{
-	ShellExecuteA(NULL, "open", "adb", "reboot", "", SW_HIDE);
-}
-
-
-void AndroidPcToolDlg::OnBnClickedButtonFastbootReboot()
-{
-	ShellExecuteA(NULL, "open", "fastboot", "reboot", "", SW_HIDE);
-}
-
-
-void AndroidPcToolDlg::OnBnClickedButtonRootRemount()
-{
-	cmdAndShowEdit("adb root && adb remount", true);
-}
-
-
-void AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillAdb()
-{
-	cmdAndShowEdit("adb kill-server && taskkill / F / IM adb.exe");
-}
-
-
-void AndroidPcToolDlg::OnBnClickedMfcmenubuttonKillJava()
-{
-	cmdAndShowEdit("taskkill / F / IM java.exe");
-}
-
-
 void AndroidPcToolDlg::OnBnClickedButtonClearApp()
 {
 	CString packageName = getAndChekTopPackageName();
@@ -574,11 +535,6 @@ void AndroidPcToolDlg::OnBnClickedButtonClearApp()
 	cmdAndShowEdit(command.c_str(), true);
 }
 
-
-void AndroidPcToolDlg::OnHf()
-{
-	openWeb("https://hf-mirror.com/");
-}
 
 void AndroidPcToolDlg::OnBnClickedButtonInstallApk()
 {
@@ -624,24 +580,5 @@ UINT upDataLs(LPVOID lParam) {
 
 void AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir()
 {
-	AfxBeginThread(upDataLs, (LPVOID)this);//启动新的线程去设置更新
-}
-
-
-void AndroidPcToolDlg::OnAiNamiSo()
-{
-	openWeb("https://www.n.cn/?fromsou=1");
-}
-
-
-void AndroidPcToolDlg::Ongetipconfig()
-{
-	std::string command = "ipconfig -all";
-	cmdAndShowEdit(command.c_str());
-}
-
-
-void AndroidPcToolDlg::OnSystemEnv()
-{
-	ShellExecute(NULL, _T("open"), _T("rundll32.exe"), _T("sysdm.cpl,EditEnvironmentVariables"), NULL, SW_SHOWNORMAL);
+	AfxBeginThread(upDataLs, (LPVOID)this);//启动新的线程去设置更新手机目录
 }
