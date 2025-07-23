@@ -47,43 +47,21 @@ public:
 	BOOL m_isTopSelft;
 	// 是否自动打开导出的文件的目录
 	BOOL m_isAutoOpenPullDir;
-	afx_msg void OnWxCode();
-	afx_msg void OnGithup();
-	afx_msg void OnGitcode();
-	afx_msg void OnGitee();
-	afx_msg void OnUiAlibabaPng();
-	afx_msg void OnCainiao();
-	afx_msg void OnAiGitcodeDeepseek();
-	afx_msg void OnToIcon();
-	afx_msg void OnBnClickedButtonTopActivity();
+	afx_msg void OnOpenWeb(UINT nID);
+	afx_msg void OnExeShell(UINT nID);
 	// 执行结果输出
 	CString m_editShowResut;
 	afx_msg void OnBnClickedButtonTopPath();
-	afx_msg void OnBnClickedButtonOpenScrcpy();
 	// 是否将投屏工具置顶
 	BOOL m_isScrcpyTop;
 	afx_msg void OnBnClickedCheckScecpyTop();
 	afx_msg void OnBnClickedButtonTopApkVersion();
-	afx_msg void OnPictureCompress();
-	afx_msg void OnAndroidCode();
-	afx_msg void OnMp4tomp3();
-	afx_msg void OnLanhuUi();
-	afx_msg void Onhenleylee();
-	afx_msg void OnGetPack();
 	// 是否导出常用日志
 	CButton m_radionCommonLogs;
 	afx_msg void OnBnClickedMfcmenubuttonPullLog();
 	afx_msg void OnConifPathAndUse();
 	afx_msg void OnBnClickedButtonPullTopApk();
-	afx_msg void OnBnClickedButtonOpenJadx();
-	afx_msg void OnBnClickedButtonOpneFscapture();
-	afx_msg void OnBnClickedButtonAdbReboot();
-	afx_msg void OnBnClickedButtonFastbootReboot();
-	afx_msg void OnBnClickedButtonRootRemount();
-	afx_msg void OnBnClickedMfcmenubuttonKillAdb();
-	afx_msg void OnBnClickedMfcmenubuttonKillJava();
 	afx_msg void OnBnClickedButtonClearApp();
-	afx_msg void OnHf();
 	// 可以拓展输入的路径的编辑框
 	DragEdit m_dragInputEdit;
 	afx_msg void OnBnClickedButtonInstallApk();
@@ -99,7 +77,4 @@ public:
 	CString m_deviceDIr;
 	afx_msg void OnBnClickedButtonLs();
 	afx_msg void OnCbnSelchangeComboDeviceDir();
-	afx_msg void OnAiNamiSo();
-	afx_msg void Ongetipconfig();
-	afx_msg void OnSystemEnv();
 };
