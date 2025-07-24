@@ -66,6 +66,7 @@ AndroidPcToolDlg::AndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 	, m_isAutoInstallApk(FALSE)
 	, m_deviceDIr(_T(""))
 	, m_StringMd5(_T(""))
+	, m_MinNoTaskShow(TRUE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -84,9 +85,11 @@ void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_DEVICE_DIR, m_comboBoxDeviceDir);
 	DDX_CBString(pDX, IDC_COMBO_DEVICE_DIR, m_deviceDIr);
 	DDX_Text(pDX, IDC_STATIC_FILE_MD5, m_StringMd5);
+	DDX_Check(pDX, IDC_CHECK_MIN_NO_TASK_SHOW, m_MinNoTaskShow);
 }
 
 BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
+    ON_MESSAGE(WM_USER + 1, OnTrayIcon)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
@@ -104,8 +107,6 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_LS, &AndroidPcToolDlg::OnBnClickedButtonLs)
 	ON_CBN_SELCHANGE(IDC_COMBO_DEVICE_DIR, &AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir)
 	ON_COMMAND_RANGE(10, 52815,&AndroidPcToolDlg::OnOpenWeb)
-	ON_COMMAND_RANGE(10, 52815,&AndroidPcToolDlg::OnExeShell)
-
 END_MESSAGE_MAP()
 
 
@@ -135,13 +136,35 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 		}
 	}
 
+
+	// 获取菜单指针
+		CMenu * pMenu = GetMenu();
+	if (pMenu)
+	{
+		// 暂时移除联想的相关显示
+		pMenu->RemoveMenu(6, MF_BYPOSITION);
+	}
+
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	// TODO: 在此添加额外的初始化代码
+    // 托盘相关
+    ZeroMemory(&m_nid, sizeof(NOTIFYICONDATA));
+    m_nid.cbSize = sizeof(NOTIFYICONDATA);
+    m_nid.hWnd = GetSafeHwnd();
+    m_nid.uID = 1;
+    m_nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+    m_nid.uCallbackMessage = WM_USER + 1;  // 自定义消息
+    m_nid.hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	wcscpy_s(m_nid.szTip, L"AndroidPcTool");// 提示文本
+    Shell_NotifyIcon(NIM_ADD, &m_nid);
 
+	// 托盘右键菜单
+    m_trayMenu.LoadMenu(IDR_TRAY_MENU);
+
+    // 控件初始化
 	m_radionCommonLogs.SetCheck(TRUE);
 
 	m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher6");
@@ -163,10 +186,23 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 
 void AndroidPcToolDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
+	UpdateData(TRUE);
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
 		CAboutDlg dlgAbout;
 		dlgAbout.DoModal();
+	}
+	else if (nID == SC_MINIMIZE)
+	{
+		ShowWindow(m_MinNoTaskShow ? SW_HIDE : SW_MINIMIZE);  // 隐藏窗口
+		return;
+
+	}
+	else if (nID == SC_RESTORE)
+	{
+		ShowWindow(m_MinNoTaskShow ? SW_SHOW : SW_SHOWNORMAL);  // 显示窗口
+		SetForegroundWindow();  // 激活窗口
+		return;
 	}
 	else
 	{
@@ -210,6 +246,30 @@ HCURSOR AndroidPcToolDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+LRESULT AndroidPcToolDlg::OnTrayIcon(WPARAM wParam, LPARAM lParam)
+{
+	if (lParam == WM_LBUTTONDOWN)
+	{
+		UpdateData(TRUE);
+		ShowWindow(m_MinNoTaskShow ? SW_SHOW : SW_SHOWNORMAL);  // 显示窗口
+		SetForegroundWindow();  // 激活窗口
+	} else if (lParam == WM_RBUTTONDOWN)
+	{
+        CPoint pos;
+        GetCursorPos(&pos);
+
+        CMenu* pSubMenu = m_trayMenu.GetSubMenu(0);  // 获取子菜单
+        if (pSubMenu)
+        {
+            // 设置菜单弹出位置，使其在前台显示
+            SetForegroundWindow();
+	
+			pSubMenu->TrackPopupMenu(TPM_RIGHTALIGN | TPM_BOTTOMALIGN, pos.x + 70, pos.y - 20, this);
+            PostMessage(WM_NULL);  // 释放菜单消息
+        }
+	}
+	return 0;
+}
 
 
 void AndroidPcToolDlg::OnBnClickedCheckTopSelft()
@@ -276,65 +336,6 @@ CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd,bool isNeedShowDefalutMsg
 CStringA AndroidPcToolDlg::cmdAndShowTopApkEdit(CStringA cmd)
 {
 	return CStringA();
-}
-
-
-void AndroidPcToolDlg::OnExeShell(UINT nID)
-{
-	CAboutDlg dlgAbout;
-	// 根据不同的ID执行操作
-	switch (nID)
-	{
-	case IDC_BUTTON_TOP_ACTIVITY:
-		// 显示当前活动的顶部信息
-		cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"", true);
-		break;
-	case IDC_BUTTON_OPEN_SCR_CPY:
-		// 执行scrcpy脚本以显示设备屏幕
-		ShellExecuteA(NULL, "open", "scrcpy-noconsole.vbs", "", "scrcpy-win64-v3.2", SW_SHOWNORMAL);
-		break;
-	case IDC_BUTTON_OPEN_JADX:
-		// 打开JADX反编译工具
-		ShellExecuteA(NULL, "open", "jadx.exe", "", "", SW_SHOWNORMAL);
-		break;
-	case IDC_BUTTON_OPNE_FSCapture:
-		// 打开FSCapture屏幕捕捉工具
-		ShellExecuteA(NULL, "open", "FSCapture.exe", "FSCapture", "", SW_SHOWNORMAL);
-		break;
-	case IDC_BUTTON_ADB_REBOOT:
-		// 通过ADB命令重启设备
-		ShellExecuteA(NULL, "open", "adb", "reboot", "", SW_HIDE);
-		break;
-	case IDC_BUTTON_FASTBOOT_REBOOT:
-		// 通过Fastboot命令重启设备
-		ShellExecuteA(NULL, "open", "fastboot", "reboot", "", SW_HIDE);
-		break;
-	case IDC_BUTTON_ROOT_REMOUNT:
-		// 以root权限重新挂载设备文件系统
-		cmdAndShowEdit("adb root && adb remount", true);
-		break;
-	case IDC_MFCMENUBUTTON_KILL_ABD:
-		// 杀死ADB服务器进程和所有ADB客户端进程
-		cmdAndShowEdit("adb kill-server && taskkill / F / IM adb.exe");
-		break;
-	case IDC_MFCMENUBUTTON_KILL_JAVA:
-		// 杀死所有Java进程
-		cmdAndShowEdit("taskkill / F / IM java.exe");
-		break;
-	case ID_OPEN_ENV:
-		// 打开环境变量编辑界面
-		ShellExecute(NULL, _T("open"), _T("rundll32.exe"), _T("sysdm.cpl,EditEnvironmentVariables"), NULL, SW_SHOWNORMAL);
-		break;
-	case ID_getIpconfig:
-        cmdAndShowEdit("ipconfig -all");
-		break;
-	case IDM_ABOUTBOX:
-	
-		dlgAbout.DoModal();
-		break;
-	default:
-		break;
-	}
 }
 
 void AndroidPcToolDlg::OnOpenWeb(UINT nID)
@@ -406,7 +407,69 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
 		// 打开AI智能搜索工具网站
 		openWeb("https://www.n.cn/?fromsou=1");
 		break;
-	default:
+	case ID_GIT_CODE_SELF:
+		openWeb("https://gitcode.com/wanghuanlong/AndroidPcTool");
+		break;
+	case ID_DIR_SHOT:
+		MessageBoxA(NULL, "请选择截图保存目录", "提示", MB_OK);
+		break;
+	case ID_DIR_LOG:
+		MessageBoxA(NULL, "请选日志保存目录", "提示", MB_OK);
+		break;
+	case ID_DIR_APK:
+		MessageBoxA(NULL, "请选择APK保存目录", "提示", MB_OK);
+		break;
+	case IDC_BUTTON_TOP_ACTIVITY:
+		// 显示当前活动的顶部信息
+		cmdAndShowEdit("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"", true);
+		break;
+	case IDC_BUTTON_OPEN_SCR_CPY:
+		// 执行scrcpy脚本以显示设备屏幕
+		ShellExecuteA(NULL, "open", "scrcpy-noconsole.vbs", "", "scrcpy-win64-v3.2", SW_SHOWNORMAL);
+		break;
+	case IDC_BUTTON_OPEN_JADX:
+		// 打开JADX反编译工具
+		ShellExecuteA(NULL, "open", "jadx.exe", "", "", SW_SHOWNORMAL);
+		break;
+	case IDC_BUTTON_OPNE_FSCapture:
+		// 打开FSCapture屏幕捕捉工具
+		ShellExecuteA(NULL, "open", "FSCapture.exe", "FSCapture", "", SW_SHOWNORMAL);
+		break;
+	case IDC_BUTTON_ADB_REBOOT:
+		// 通过ADB命令重启设备
+		ShellExecuteA(NULL, "open", "adb", "reboot", "", SW_HIDE);
+		break;
+	case IDC_BUTTON_REBOOT_P:
+		// 通过ADB命令重启设备
+		ShellExecuteA(NULL, "open", "adb", "reboot", "-p", SW_HIDE);
+		break;
+	case IDC_BUTTON_FASTBOOT_REBOOT:
+		// 通过Fastboot命令重启设备
+		ShellExecuteA(NULL, "open", "fastboot", "reboot", "", SW_HIDE);
+		break;
+	case IDC_BUTTON_ROOT_REMOUNT:
+		// 以root权限重新挂载设备文件系统
+		cmdAndShowEdit("adb root && adb remount", true);
+		break;
+	case IDC_MFCMENUBUTTON_KILL_ABD:
+		// 杀死ADB服务器进程和所有ADB客户端进程
+		cmdAndShowEdit("adb kill-server && taskkill / F / IM adb.exe");
+		break;
+	case IDC_MFCMENUBUTTON_KILL_JAVA:
+		// 杀死所有Java进程
+		cmdAndShowEdit("taskkill / F / IM java.exe");
+		break;
+	case ID_OPEN_ENV:
+		// 打开环境变量编辑界面
+		ShellExecute(NULL, _T("open"), _T("rundll32.exe"), _T("sysdm.cpl,EditEnvironmentVariables"), NULL, SW_SHOWNORMAL);
+		break;
+	case ID_getIpconfig:
+		cmdAndShowEdit("ipconfig -all");
+		break;
+	case ID_ABOUT:
+		CAboutDlg dlgAbout;
+		dlgAbout.DoModal();
+		dlgAbout.ShowWindow(SW_SHOW);
 		break;
 	}
 }
@@ -662,3 +725,4 @@ void AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir()
 //
 //	MessageBox(_T("重启成功"));
 //}
+

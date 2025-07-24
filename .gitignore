@@ -25,6 +25,7 @@
 *.la
 *.a
 *.lib
+*.aps
 
 # Executables
 *.exe
@@ -45,3 +46,4 @@
 /.idea/modules.xml
 /.idea/vcs.xml
 /.idea/.gitignore
+/AndroidPcTool/AndroidPcTool.aps

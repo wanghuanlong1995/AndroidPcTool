@@ -10,8 +10,9 @@
 #define IDR_MAINFRAME                   128
 #define IDR_MENU_MAIN                   130
 #define IDD_DIALOG_MAIN_PATH_CONFIG     132
+#define IDR_TRAY_MENU                   135
 #define IDC_BUTTON1                     1000
-#define IDC_BUTTON_OPEN_SCR_CPY          1000
+#define IDC_BUTTON_OPEN_SCR_CPY         1000
 #define IDC_BUTTON_SAVE                 1000
 #define IDC_BUTTON_SHOT_AND_PULL        1001
 #define IDC_BUTTON_CANCEL               1001
@@ -28,34 +29,34 @@
 #define IDC_BUTTON_PULL_TOP_APK         1006
 #define IDC_EDIT6                       1007
 #define IDC_BUTTON_CLEAR_APP            1007
-#define IDC_BUTTON_ENTER_SETTINGS                     1008
+#define IDC_BUTTON_ENTER_SETTINGS       1008
 #define IDC_EDIT7                       1008
-#define IDC_MFCMENUBUTTON_KILL_ABD              1009
+#define IDC_MFCMENUBUTTON_KILL_ABD      1009
 #define IDC_EDIT8                       1009
-#define IDC_MFCMENUBUTTON_KILL_JAVA              1010
+#define IDC_MFCMENUBUTTON_KILL_JAVA     1010
 #define IDC_EDIT9                       1010
-#define IDC_BUTTON_UI_VIEWER                     1011
+#define IDC_BUTTON_UI_VIEWER            1011
 #define IDC_EDIT10                      1011
-#define IDC_BUTTON_PX_COOK                    1012
+#define IDC_BUTTON_PX_COOK              1012
 #define IDC_EDIT11                      1012
-#define IDC_CHECK_LOGIN                      1013
-#define IDC_CHECK_SCE_CPY_TOP            1013
-#define IDC_CHECK_TOP_SELF             1014
+#define IDC_CHECK_LOGIN                 1013
+#define IDC_CHECK_SCE_CPY_TOP           1013
+#define IDC_CHECK_TOP_SELF              1014
 #define IDC_EDIT12                      1014
 #define IDC_CHECK_AUTO_OPEN_DIR         1015
 #define IDC_EDIT13                      1015
 #define IDC_EDIT1                       1015
-#define IDC_BUTTON_GIF                    1016
+#define IDC_BUTTON_GIF                  1016
 #define IDC_EDIT14                      1016
 #define IDC_EDIT_LOG                    1017
-#define IDC_BUTTON_FAN_HUN_XIAO                    1018
+#define IDC_BUTTON_FAN_HUN_XIAO         1018
 #define IDC_BUTTON_OPEN_JADX            1019
 #define IDC_EDIT_SHOW_RESULT            1020
-#define IDC_RADIO_COMMON                      1021
-#define IDC_RADIO_COMMON_LOG           1023
-#define IDC_RADIO_ALL_LOG                      1024
+#define IDC_RADIO_COMMON                1021
+#define IDC_RADIO_COMMON_LOG            1023
+#define IDC_RADIO_ALL_LOG               1024
 #define IDC_BUTTON_DEL_LOG              1025
-#define IDC_MFC_MENUBUTTON_PULL_LOG      1026
+#define IDC_MFC_MENUBUTTON_PULL_LOG     1026
 #define IDC_BUTTON_SELECT_DIR_EX        1027
 #define IDC_BUTTON_OPEN_EX              1028
 #define IDC_BUTTON_SELECT_DIR_1         1029
@@ -106,8 +107,10 @@
 #define IDC_BTN_LONG_HUN                1064
 #define IDC_BUTTON_remount              1065
 #define IDC_BUTTON_p                    1066
+#define IDC_BUTTON_REBOOT_P             1066
 #define IDC_BUTTON_STOP_AND_START       1067
 #define IDC_BUTTON_bootloader           1068
+#define IDC_CHECK_MIN_NO_TASK_SHOW      1069
 #define ID_32812                        31812
 #define ID_32813                        31813
 #define ID_32814                        31814
@@ -154,20 +157,37 @@
 #define ID_CONIF_PATH_AND_USE           32808
 #define ID_32809                        32809
 #define ID_AI32810                      32810
+#define ID_GIT_CODE_SELF                32810
 #define ID_getIpconfig                  32811
 #define ID_AI_NAMI_SO                   32812
-#define ID_OPEN_ENV                     32812
-#define ID_HF                           32814
-#define ID_HENLEYLEE                    32815
-#define ID_LANHU_UI                     32816
+#define ID_OPEN_ENV                     32813
+#define ID_HF                           32815
+#define ID_ABOUTBOX                     32816
+#define ID_HENLEYLEE                    32817
+#define ID_LANHU_UI                     32819
+#define ID_REWARD                       32821
+#define ID_VERSION_UPDATE               32822
+#define ID_32822                        32822
+#define ID_ABOUT                        32823
+#define ID_32823                        32823
+#define ID_32824                        32824
+#define ID_LX_BRACN                     32825
+#define ID_LX_BUG                       32826
+#define ID_LX_WIKI                      32827
+#define ID_LX_SYSTEM_IMAGE              32828
+#define ID_SHOT_DIR                     32829
+#define ID_DIR_SHOT                     32830
+#define ID_DIR_LOG                      32831
+#define ID_DIR_APK                      32832
+#define ID_LX_BRANCH                    32833
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        135
-#define _APS_NEXT_COMMAND_VALUE         32813
-#define _APS_NEXT_CONTROL_VALUE         1065
+#define _APS_NEXT_RESOURCE_VALUE        137
+#define _APS_NEXT_COMMAND_VALUE         32834
+#define _APS_NEXT_CONTROL_VALUE         1070
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

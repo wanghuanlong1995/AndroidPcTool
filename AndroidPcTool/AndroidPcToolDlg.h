@@ -35,12 +35,14 @@ public:
 // 实现
 protected:
 	HICON m_hIcon;
-
+    NOTIFYICONDATA m_nid;  // 托盘图标数据结构
+    CMenu m_trayMenu;  // 托盘右键菜单
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	LRESULT AndroidPcToolDlg::OnTrayIcon(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedCheckTopSelft();
@@ -49,7 +51,6 @@ public:
 	// 是否自动打开导出的文件的目录
 	BOOL m_isAutoOpenPullDir;
 	afx_msg void OnOpenWeb(UINT nID);
-	afx_msg void OnExeShell(UINT nID);
 	// 执行结果输出
 	CString m_editShowResut;
 	afx_msg void OnBnClickedButtonTopPath();
@@ -82,4 +83,6 @@ public:
     CString m_StringMd5;
 
     void setStringMd5();
+	// 最小化不显示任务栏
+	BOOL m_MinNoTaskShow;
 };
