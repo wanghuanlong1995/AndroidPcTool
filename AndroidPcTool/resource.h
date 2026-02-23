@@ -39,7 +39,6 @@
 #define IDC_EDIT10                      1011
 #define IDC_BUTTON_PX_COOK              1012
 #define IDC_EDIT11                      1012
-#define IDC_CHECK_LOGIN                 1013
 #define IDC_CHECK_SCE_CPY_TOP           1013
 #define IDC_CHECK_TOP_SELF              1014
 #define IDC_EDIT12                      1014
@@ -48,6 +47,7 @@
 #define IDC_EDIT1                       1015
 #define IDC_BUTTON_GIF                  1016
 #define IDC_EDIT14                      1016
+#define IDC_EDIT_SHOT_PATH              1016
 #define IDC_EDIT_LOG                    1017
 #define IDC_BUTTON_FAN_HUN_XIAO         1018
 #define IDC_BUTTON_OPEN_JADX            1019
@@ -111,6 +111,8 @@
 #define IDC_BUTTON_STOP_AND_START       1067
 #define IDC_BUTTON_bootloader           1068
 #define IDC_CHECK_MIN_NO_TASK_SHOW      1069
+#define IDC_BUTTON_REBOOT_EDL           1070
+#define IDC_CHECK_LOGIN                 1113
 #define ID_32812                        31812
 #define ID_32813                        31813
 #define ID_32814                        31814
@@ -180,14 +182,22 @@
 #define ID_DIR_LOG                      32831
 #define ID_DIR_APK                      32832
 #define ID_LX_BRANCH                    32833
+#define ID_32834                        32834
+#define ID_32835                        32835
+#define ID_WU_AI_PO_JIE                 32836
+#define ID_AI32837                      32837
+#define ID_AI32838                      32838
+#define ID_AI_DOUBAO                    32839
+#define ID_AI_QIANWEN                   32840
+#define ID_32841                        32841
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        137
-#define _APS_NEXT_COMMAND_VALUE         32834
-#define _APS_NEXT_CONTROL_VALUE         1070
+#define _APS_NEXT_COMMAND_VALUE         32842
+#define _APS_NEXT_CONTROL_VALUE         1071
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

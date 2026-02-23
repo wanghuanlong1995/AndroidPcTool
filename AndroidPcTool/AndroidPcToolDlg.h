@@ -43,6 +43,12 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	LRESULT AndroidPcToolDlg::OnTrayIcon(WPARAM wParam, LPARAM lParam);
+
+	// 消息处理函数声明
+	BOOL OnToolTipNotify(UINT id, NMHDR* pNMHDR, LRESULT* pResult);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
+	CWinApp* pApp;
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedCheckTopSelft();
@@ -85,4 +91,8 @@ public:
     void setStringMd5();
 	// 最小化不显示任务栏
 	BOOL m_MinNoTaskShow;
+
+	// 工具提示控件对象
+	CToolTipCtrl m_tooltip;  
+	afx_msg void OnBnClickedButtonPull();
 };

@@ -67,8 +67,11 @@ AndroidPcToolDlg::AndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 	, m_deviceDIr(_T(""))
 	, m_StringMd5(_T(""))
 	, m_MinNoTaskShow(TRUE)
+	, m_nid()
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
+	pApp = AfxGetApp();
 }
 
 void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
@@ -93,6 +96,7 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_NOTIFY_EX(TTN_NEEDTEXT, 0, &AndroidPcToolDlg::OnToolTipNotify)
 	ON_BN_CLICKED(IDC_CHECK_TOP_SELF, &AndroidPcToolDlg::OnBnClickedCheckTopSelft)
 	ON_BN_CLICKED(IDC_BUTTON_TOP_PATH, &AndroidPcToolDlg::OnBnClickedButtonTopPath)
 	ON_BN_CLICKED(IDC_CHECK_SCE_CPY_TOP, &AndroidPcToolDlg::OnBnClickedCheckScecpyTop)
@@ -107,6 +111,7 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_LS, &AndroidPcToolDlg::OnBnClickedButtonLs)
 	ON_CBN_SELCHANGE(IDC_COMBO_DEVICE_DIR, &AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir)
 	ON_COMMAND_RANGE(10, 52815,&AndroidPcToolDlg::OnOpenWeb)
+	ON_BN_CLICKED(IDC_BUTTON_PULL, &AndroidPcToolDlg::OnBnClickedButtonPull)
 END_MESSAGE_MAP()
 
 
@@ -150,14 +155,14 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-    // 托盘相关
-    ZeroMemory(&m_nid, sizeof(NOTIFYICONDATA));
-    m_nid.cbSize = sizeof(NOTIFYICONDATA);
-    m_nid.hWnd = GetSafeHwnd();
-    m_nid.uID = 1;
-    m_nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
-    m_nid.uCallbackMessage = WM_USER + 1;  // 自定义消息
-    m_nid.hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	// 托盘相关
+	ZeroMemory(&m_nid, sizeof(NOTIFYICONDATA));
+	m_nid.cbSize = sizeof(NOTIFYICONDATA);
+	m_nid.hWnd = GetSafeHwnd();
+	m_nid.uID = 1;
+	m_nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+	m_nid.uCallbackMessage = WM_USER + 1;  // 自定义消息
+	m_nid.hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	wcscpy_s(m_nid.szTip, L"AndroidPcTool");// 提示文本
     Shell_NotifyIcon(NIM_ADD, &m_nid);
 
@@ -181,6 +186,20 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 	m_comboBoxDeviceDir.InsertString(0, L"sdcard/log");
 
 	m_comboBoxDeviceDir.SetCurSel(0);
+
+
+	// 初始化工具提示控件
+	m_tooltip.Create(this);
+	// 设置提示样式：气泡样式 + 总是显示
+	m_tooltip.SetMaxTipWidth(SHRT_MAX);
+	m_tooltip.Activate(TRUE);
+
+	// 为具体控件添加提示（控件ID和提示文本对应）
+	m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_TOP_ACTIVITY), L"adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"");
+	m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_TOP_APK_VERSION), L"adb shell dumpsys package [packageName] | findstr version");
+	m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_ENTER_SETTINGS), L"adb shell am start -a android.settings.APPLICATION_DETAILS_SETTINGS -d package: [packageName]");
+	//m_tooltip.AddTool(GetDlgItem(IDC_EDIT1), L"请输入用户名");
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -338,6 +357,49 @@ CStringA AndroidPcToolDlg::cmdAndShowTopApkEdit(CStringA cmd)
 	return CStringA();
 }
 
+
+// 处理工具提示文本请求
+BOOL AndroidPcToolDlg::OnToolTipNotify(UINT id, NMHDR* pNMHDR, LRESULT* pResult)
+{
+	TOOLTIPTEXT* pTTT = (TOOLTIPTEXT*)pNMHDR;
+	UINT_PTR nID = pNMHDR->idFrom;
+
+	// 如果是控件ID（而非HWND），则手动设置文本
+	if (pTTT->uFlags & TTF_IDISHWND)
+	{
+		nID = ::GetDlgCtrlID((HWND)nID);
+		if (nID)
+		{
+			// 根据控件ID匹配提示文本
+			//switch (nID)
+			//{
+			//case IDC_BUTTON_TOP_ACTIVITY:
+			//	pTTT->lpszText = (LPTSTR)L"adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"";
+			//	break;
+			//case IDC_EDIT1:
+			//	pTTT->lpszText = (LPTSTR)L"请输入用户名";
+			//	break;
+			//default:
+			//	pTTT->lpszText = L"未知控件";
+			//}
+			pTTT->hinst = AfxGetResourceHandle();
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+// 预处理消息，让工具提示捕获鼠标消息
+BOOL AndroidPcToolDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_MOUSEMOVE || pMsg->message == WM_LBUTTONDOWN ||
+		pMsg->message == WM_RBUTTONDOWN || pMsg->message == WM_MBUTTONDOWN)
+	{
+		m_tooltip.RelayEvent(pMsg);
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
 void AndroidPcToolDlg::OnOpenWeb(UINT nID)
 {
 	// 根据不同的ID打开对应的网页
@@ -407,11 +469,22 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
 		// 打开AI智能搜索工具网站
 		openWeb("https://www.n.cn/?fromsou=1");
 		break;
+	case ID_AI_DOUBAO:
+		// 打开AI豆包网站
+		openWeb("https://www.doubao.com/chat/");
+		break;
+	case ID_AI_QIANWEN:
+		// 打开AI千问网站
+		openWeb("https://www.qianwen.com/?ch=webtongyi@sem_bdsempinzhuan");
+		break;
 	case ID_GIT_CODE_SELF:
 		openWeb("https://gitcode.com/wanghuanlong/AndroidPcTool");
 		break;
+	case ID_WU_AI_PO_JIE:
+		openWeb("https://www.52pojie.cn/");
+		break;
 	case ID_DIR_SHOT:
-		MessageBoxA(NULL, "请选择截图保存目录", "提示", MB_OK);
+		ShellExecute(NULL, L"open", pApp->GetProfileString(_T("Settings"), CONFIG_SHOT_PIC_PATH, _T("")), L"", L"", SW_SHOWNORMAL);
 		break;
 	case ID_DIR_LOG:
 		MessageBoxA(NULL, "请选日志保存目录", "提示", MB_OK);
@@ -433,7 +506,11 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
 		break;
 	case IDC_BUTTON_OPNE_FSCapture:
 		// 打开FSCapture屏幕捕捉工具
-		ShellExecuteA(NULL, "open", "FSCapture.exe", "FSCapture", "", SW_SHOWNORMAL);
+		ShellExecuteA(NULL, "open", "FSCapture.exe", "", "FSCapture", SW_SHOWNORMAL);
+		break;
+	case IDC_BUTTON_PX_COOK:
+		// 打开PxCook
+		ShellExecuteA(NULL, "open", "PxCook.exe", "", "PxCook", SW_SHOWNORMAL);
 		break;
 	case IDC_BUTTON_ADB_REBOOT:
 		// 通过ADB命令重启设备
@@ -442,6 +519,10 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
 	case IDC_BUTTON_REBOOT_P:
 		// 通过ADB命令重启设备
 		ShellExecuteA(NULL, "open", "adb", "reboot", "-p", SW_HIDE);
+		break;
+	case IDC_BUTTON_REBOOT_EDL:
+		// 通过ADB命令重启设备
+		ShellExecuteA(NULL, "open", "adb", "reboot", "edl", SW_HIDE);
 		break;
 	case IDC_BUTTON_FASTBOOT_REBOOT:
 		// 通过Fastboot命令重启设备
@@ -726,3 +807,8 @@ void AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir()
 //	MessageBox(_T("重启成功"));
 //}
 
+
+void AndroidPcToolDlg::OnBnClickedButtonPull()
+{
+
+}
