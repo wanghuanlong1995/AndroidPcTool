@@ -112,6 +112,8 @@
 #define IDC_BUTTON_bootloader           1068
 #define IDC_CHECK_MIN_NO_TASK_SHOW      1069
 #define IDC_BUTTON_REBOOT_EDL           1070
+#define IDC_CHECK1                      1071
+#define IDC_CHECK_INSTALL_G             1071
 #define IDC_CHECK_LOGIN                 1113
 #define ID_32812                        31812
 #define ID_32813                        31813
@@ -197,7 +199,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         32842
-#define _APS_NEXT_CONTROL_VALUE         1071
+#define _APS_NEXT_CONTROL_VALUE         1072
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

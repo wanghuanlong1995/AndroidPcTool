@@ -95,4 +95,6 @@ public:
 	// 工具提示控件对象
 	CToolTipCtrl m_tooltip;  
 	afx_msg void OnBnClickedButtonPull();
+	// 安装apk时授予全部权限
+	BOOL m_install_g;
 };

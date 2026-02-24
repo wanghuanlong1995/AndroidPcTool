@@ -1,21 +1,24 @@
-// ����ɼ���ú�������ص�
+// 落羽杉配置和设置相关的
 #pragma once
 
 #include <afxwin.h>   
 
-// �Ƿ����������
+// 是否可以上外网
 #define CONFIG_CAN_LOGIN_NET _T("CONFIG_CAN_LOGIN_NET")
 
-// ��չ����Ŀ¼�ֶ�
+// 扩展工具目录字段
 #define CONFIG_TOOL_EX_PATH _T("CONFIG_TOOL_EX_PATH")
 
-// ��������Ŀ¼�ֶ�
+// 截屏导出目录字段
 #define CONFIG_SHOT_PIC_PATH  _T("CONFIG_SHOT_PIC_PATH")
 
-// ��־����Ŀ¼�ֶ�
+// 日志导出目录字段
 #define CONFIG_LOG_PATH  _T("CONFIG_LOG_PULL_PATH")
 
-// ����Ŀ¼ʹ���ֶ�
+// 常用目录使用字段
+#define USE_PATH_COUNT 12
+#define TOTAL_PATH_COUNT (3 + USE_PATH_COUNT)
+
 #define CONFIG_USE_PATH1  _T("CONFIG_USE_PATH1")
 #define CONFIG_USE_PATH2  _T("CONFIG_USE_PATH2")
 #define CONFIG_USE_PATH3  _T("CONFIG_USE_PATH3")

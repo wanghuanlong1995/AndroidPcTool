@@ -68,6 +68,7 @@ AndroidPcToolDlg::AndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 	, m_StringMd5(_T(""))
 	, m_MinNoTaskShow(TRUE)
 	, m_nid()
+	, m_install_g(TRUE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -89,6 +90,7 @@ void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_CBString(pDX, IDC_COMBO_DEVICE_DIR, m_deviceDIr);
 	DDX_Text(pDX, IDC_STATIC_FILE_MD5, m_StringMd5);
 	DDX_Check(pDX, IDC_CHECK_MIN_NO_TASK_SHOW, m_MinNoTaskShow);
+	DDX_Check(pDX, IDC_CHECK_INSTALL_G, m_install_g);
 }
 
 BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
@@ -211,7 +213,7 @@ void AndroidPcToolDlg::OnSysCommand(UINT nID, LPARAM lParam)
 		CAboutDlg dlgAbout;
 		dlgAbout.DoModal();
 	}
-	else if (nID == SC_MINIMIZE)
+	else if (nID == SC_MINIMIZE && lParam != 0)
 	{
 		ShowWindow(m_MinNoTaskShow ? SW_HIDE : SW_MINIMIZE);  // 隐藏窗口
 		return;
@@ -219,6 +221,7 @@ void AndroidPcToolDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 	else if (nID == SC_RESTORE)
 	{
+		ShowWindow(SW_SHOWNORMAL);  // 显示窗口
 		ShowWindow(m_MinNoTaskShow ? SW_SHOW : SW_SHOWNORMAL);  // 显示窗口
 		SetForegroundWindow();  // 激活窗口
 		return;
@@ -699,7 +702,14 @@ void AndroidPcToolDlg::OnBnClickedButtonClearApp()
 void AndroidPcToolDlg::OnBnClickedButtonInstallApk()
 {
 	UpdateData(TRUE);
-	std::string command = "adb install " + CStringA(m_editInputPath);
+
+	std::string g_Str = "";
+	if (m_install_g) {
+		g_Str = " -g ";
+	}
+
+	std::string command = "adb install " + g_Str;
+	command.append(CStringA(m_editInputPath));
 	cmdAndShowEdit(command.c_str());
 }
 
