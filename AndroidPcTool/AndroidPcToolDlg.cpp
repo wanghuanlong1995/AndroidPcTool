@@ -326,33 +326,57 @@ void AndroidPcToolDlg::setViewHide(int viewId)
 	GetDlgItem(viewId)->ShowWindow(SW_HIDE);
 }
 
-CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd,bool isNeedShowDefalutMsg)
+// 无控制台窗口执行命令，返回标准输出+标准错误
+static std::string RunHiddenCommand(const char* cmd)
 {
-	FILE* pipe;
-	char buffer[1024];
-	std::string command = cmd.GetString();
-	pipe = _popen(command.c_str(), "r");
-	if (!pipe) {
-		AfxMessageBox(_T("Failed to execute command"));
-		return "";
-	}
+	std::string command = std::string("cmd.exe /c ") + cmd;
 
-	//adb shell dumpsys package tv.danmaku.bili | findstr version
+	SECURITY_ATTRIBUTES sa = { sizeof(sa), NULL, TRUE };
+	HANDLE hRead = NULL, hWrite = NULL;
+	if (!CreatePipe(&hRead, &hWrite, &sa, 0))
+		return {};
+	SetHandleInformation(hRead, HANDLE_FLAG_INHERIT, 0);
 
-	std::string installPath = "";
-	while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-		installPath = installPath + buffer + "\r\n";
-	}
-	_pclose(pipe);
+	STARTUPINFOA si = {};
+	si.cb          = sizeof(si);
+	si.dwFlags     = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_HIDE;
+	si.hStdOutput  = hWrite;
+	si.hStdError   = hWrite;
 
-	// 将结果显示在编辑框中
-	m_editShowResut = installPath.c_str();
-	if (installPath.empty() && isNeedShowDefalutMsg) {
-		m_editShowResut = L"请检查设备连接或者是否解锁";
+	PROCESS_INFORMATION pi = {};
+	std::string result;
+	if (CreateProcessA(NULL, const_cast<char*>(command.c_str()),
+		NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi))
+	{
+		CloseHandle(hWrite);
+		char buf[1024];
+		DWORD dwRead = 0;
+		while (ReadFile(hRead, buf, sizeof(buf) - 1, &dwRead, NULL) && dwRead)
+		{
+			buf[dwRead] = '\0';
+			result += buf;
+		}
+		WaitForSingleObject(pi.hProcess, INFINITE);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
 	}
+	else
+	{
+		CloseHandle(hWrite);
+	}
+	CloseHandle(hRead);
+	return result;
+}
+
+CStringA AndroidPcToolDlg::cmdAndShowEdit(CStringA cmd, bool isNeedShowDefalutMsg)
+{
+	std::string output = RunHiddenCommand(cmd.GetString());
+	m_editShowResut = output.empty() && isNeedShowDefalutMsg
+		? L"请检查设备连接或者是否解锁"
+		: CString(output.c_str());
 	UpdateData(FALSE);
-
-	return installPath.c_str();
+	return output.c_str();
 }
 
 CStringA AndroidPcToolDlg::cmdAndShowTopApkEdit(CStringA cmd)
@@ -592,34 +616,16 @@ CStringA ExtractInstallPath(const CStringA& output) {
 
 CString getTopPackageName()
 {
-	// 执行命令获取当前置顶应用的包名
-	FILE* pipe = _popen("adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"", "r");
-	if (!pipe) {
-		//AfxMessageBox(_T("Failed to execute command"));
-		return L"";
-	}
+	std::string raw = RunHiddenCommand(
+		"adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"");
 
-	// 读取包名
-	char buffer[128];
-	std::string packageAndActivityName = "";
-	if (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-		packageAndActivityName = buffer;
-		// 去掉换行符
-		packageAndActivityName.erase(packageAndActivityName.find_last_not_of("\r\n") + 1);
-	}
-	_pclose(pipe);
-	CString output = CString(packageAndActivityName.c_str());
-	CString packageName;
-	// 查找 "com." 起始位置，避免截取到前面的无关内容
-	int nStartPos = output.Find(_T("ACTIVITY")) + 9;
-	if (nStartPos != -1) {
-		// 从 "com." 开始查找第一个 '/'
-		int nSlashPos = output.Find(_T('/'), nStartPos);
-		if (nSlashPos != -1) {
-			packageName = output.Mid(nStartPos, nSlashPos - nStartPos);
-		}
-	}
-	return packageName;
+	CString output(raw.c_str());
+	int nStart = output.Find(_T("ACTIVITY"));
+	if (nStart == -1) return L"";
+	nStart += 9;
+	int nSlash = output.Find(_T('/'), nStart);
+	if (nSlash == -1) return L"";
+	return output.Mid(nStart, nSlash - nStart);
 }
 
 CString AndroidPcToolDlg::getAndChekTopPackageName()
