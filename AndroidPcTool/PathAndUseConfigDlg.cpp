@@ -1,4 +1,4 @@
-// PathAndUseConfigDlg.cpp: 实现文件
+﻿// PathAndUseConfigDlg.cpp: 实现文件
 //
 
 #include "pch.h"
@@ -6,8 +6,6 @@
 #include "afxdialogex.h"
 #include "PathAndUseConfigDlg.h"
 
-// 是否可以上外网
-#define CONFIG_CAN_LOGIN_NET _T("CONFIG_CAN_LOGIN_NET")
 #include <shobjidl.h>
 
 #pragma comment(lib, "ole32.lib")

@@ -1,4 +1,4 @@
-// 落羽杉配置和设置相关的
+﻿// 落羽杉配置和设置相关的
 #pragma once
 
 #include <afxwin.h>   
@@ -18,6 +18,10 @@
 // 常用目录使用字段
 #define USE_PATH_COUNT 12
 #define TOTAL_PATH_COUNT (3 + USE_PATH_COUNT)
+
+#define CONFIG_FIRST_RUN_DATE _T("CONFIG_FIRST_RUN_DATE")        // YYYYMMDD
+#define CONFIG_ACTIVATION_TIME _T("CONFIG_ACTIVATION_TIME")      // YYYYMMDD
+#define CONFIG_ACTIVATION_CODE _T("CONFIG_ACTIVATION_CODE")      // MD5(machineCode + activationTime)
 
 #define CONFIG_USE_PATH1  _T("CONFIG_USE_PATH1")
 #define CONFIG_USE_PATH2  _T("CONFIG_USE_PATH2")
