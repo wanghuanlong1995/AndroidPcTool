@@ -183,6 +183,7 @@
 #define ID_DIR_SHOT                     32830
 #define ID_DIR_LOG                      32831
 #define ID_DIR_APK                      32832
+#define ID_TRAY_COMMON_PATH_BASE        40000
 #define ID_LX_BRANCH                    32833
 #define ID_32834                        32834
 #define ID_32835                        32835
@@ -192,6 +193,11 @@
 #define ID_AI_DOUBAO                    32839
 #define ID_AI_QIANWEN                   32840
 #define ID_32841                        32841
+#define ID_AOSP                         32842
+#define ID_ACTIVATE                     32843
+#define ID_CONFIG_GET_ITEM              32844
+#define ID_CONFIG_EXPORT_ALL            32845
+#define ID_CONFIG_ITEM_BASE             41000
 
 // Next default values for new objects
 // 

@@ -37,6 +37,7 @@ protected:
 	HICON m_hIcon;
     NOTIFYICONDATA m_nid;  // 托盘图标数据结构
     CMenu m_trayMenu;  // 托盘右键菜单
+	CMenu m_trayCommonPathsMenu; // 托盘：常用目录打开 子菜单（运行时动态生成）
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -97,4 +98,10 @@ public:
 	afx_msg void OnBnClickedButtonPull();
 	// 安装apk时授予全部权限
 	BOOL m_install_g;
+
+private:
+	void CheckForUpdateGitCode();
+	void ActivateByClipboard();
+	void ShowConfigItemPicker();
+	void ExportAllSettingsToFile();
 };
