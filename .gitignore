@@ -25,6 +25,7 @@
 *.la
 *.a
 *.lib
+*.aps
 
 # Executables
 *.exe
@@ -36,6 +37,7 @@
 /AndroidPcTool/x64/Debug
 /AndroidPcTool/x64/Release
 /x64/Release
+/.idea
 /AndroidPcTool/Release
 /Release/AndroidPcTool.pdb
 /.idea/AndroidPcTool.iml
@@ -44,3 +46,5 @@
 /.idea/modules.xml
 /.idea/vcs.xml
 /.idea/.gitignore
+/AndroidPcTool/AndroidPcTool.aps
+

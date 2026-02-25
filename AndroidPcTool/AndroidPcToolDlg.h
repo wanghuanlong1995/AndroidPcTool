@@ -4,6 +4,7 @@
 
 #pragma once
 #include"DragEdit.h"
+#include "WideCharUtils.h"
 
 // AndroidPcToolDlg 对话框
 class AndroidPcToolDlg : public CDialogEx
@@ -34,12 +35,20 @@ public:
 // 实现
 protected:
 	HICON m_hIcon;
-
+    NOTIFYICONDATA m_nid;  // 托盘图标数据结构
+    CMenu m_trayMenu;  // 托盘右键菜单
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	LRESULT AndroidPcToolDlg::OnTrayIcon(WPARAM wParam, LPARAM lParam);
+
+	// 消息处理函数声明
+	BOOL OnToolTipNotify(UINT id, NMHDR* pNMHDR, LRESULT* pResult);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
+	CWinApp* pApp;
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedCheckTopSelft();
@@ -48,7 +57,6 @@ public:
 	// 是否自动打开导出的文件的目录
 	BOOL m_isAutoOpenPullDir;
 	afx_msg void OnOpenWeb(UINT nID);
-	afx_msg void OnExeShell(UINT nID);
 	// 执行结果输出
 	CString m_editShowResut;
 	afx_msg void OnBnClickedButtonTopPath();
@@ -77,4 +85,16 @@ public:
 	CString m_deviceDIr;
 	afx_msg void OnBnClickedButtonLs();
 	afx_msg void OnCbnSelchangeComboDeviceDir();
+    // 拖拽之后文件的md5值
+    CString m_StringMd5;
+
+    void setStringMd5();
+	// 最小化不显示任务栏
+	BOOL m_MinNoTaskShow;
+
+	// 工具提示控件对象
+	CToolTipCtrl m_tooltip;
+	afx_msg void OnBnClickedButtonPull();
+	// 安装apk时授予全部权限
+	BOOL m_install_g;
 };

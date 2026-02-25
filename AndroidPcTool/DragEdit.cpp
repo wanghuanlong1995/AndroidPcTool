@@ -51,6 +51,7 @@ void DragEdit::OnDropFiles(HDROP hDropInfo)
 	if (dlg->m_isAutoInstallApk) {
 		dlg->OnBnClickedButtonInstallApk();
 	}
+	dlg->setStringMd5();
 
 	DragFinish(hDropInfo); // 释放资源
 	CEdit::OnDropFiles(hDropInfo);
