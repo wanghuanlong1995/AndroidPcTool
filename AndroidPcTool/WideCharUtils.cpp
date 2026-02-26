@@ -2,51 +2,73 @@
 #include "WideCharUtils.h"
 
 /**
- * ÅĞ¶Ï¸ø¶¨µÄ×Ö½ÚĞòÁĞÊÇ·ñÎªGBK±àÂë
- * @param data Ö¸Ïò×Ö½ÚĞòÁĞµÄÖ¸Õë
- * @param length ×Ö½ÚĞòÁĞµÄ³¤¶È
- * @return Èç¹ûÊÇGBK±àÂëÔò·µ»ØTRUE£¬·ñÔò·µ»ØFALSE
+ * åˆ¤æ–­ç»™å®šçš„å­—èŠ‚åºåˆ—æ˜¯å¦ä¸ºGBKç¼–ç 
+ * @param data æŒ‡å‘å­—èŠ‚åºåˆ—çš„æŒ‡é’ˆ
+ * @param length å­—èŠ‚åºåˆ—çš„é•¿åº¦
+ * @return å¦‚æœæ˜¯GBKç¼–ç åˆ™è¿”å›TRUEï¼Œå¦åˆ™è¿”å›FALSE
  */
 BOOL IsGBK(const BYTE* data, int length) {
-    // ½«×Ö½ÚĞòÁĞ³¢ÊÔ×ª»»Îª¿í×Ö·û£¬CP_ACP±íÊ¾Ê¹ÓÃANSI´úÂëÒ³£¨Í¨³£¶ÔÓ¦GBK£©
+    // å°†å­—èŠ‚åºåˆ—å°è¯•è½¬æ¢ä¸ºå®½å­—ç¬¦ï¼ŒCP_ACPè¡¨ç¤ºä½¿ç”¨ANSIä»£ç é¡µï¼ˆé€šå¸¸å¯¹åº”GBKï¼‰
     int wideLen = MultiByteToWideChar(CP_ACP, 0, (LPCCH)data, length, NULL, 0);
     return (wideLen > 0);
 }
 
 /**
- * ÅĞ¶Ï¸ø¶¨µÄ×Ö½ÚĞòÁĞÊÇ·ñÎªUTF-8±àÂë
- * @param data Ö¸Ïò×Ö½ÚĞòÁĞµÄÖ¸Õë
- * @param length ×Ö½ÚĞòÁĞµÄ³¤¶È
- * @return Èç¹ûÊÇUTF-8±àÂëÔò·µ»ØTRUE£¬·ñÔò·µ»ØFALSE
+ * åˆ¤æ–­ç»™å®šçš„å­—èŠ‚åºåˆ—æ˜¯å¦ä¸ºUTF-8ç¼–ç 
+ * @param data æŒ‡å‘å­—èŠ‚åºåˆ—çš„æŒ‡é’ˆ
+ * @param length å­—èŠ‚åºåˆ—çš„é•¿åº¦
+ * @return å¦‚æœæ˜¯UTF-8ç¼–ç åˆ™è¿”å›TRUEï¼Œå¦åˆ™è¿”å›FALSE
  */
 BOOL IsUTF8(const BYTE* data, int length) {
-    // ½«×Ö½ÚĞòÁĞ³¢ÊÔ×ª»»Îª¿í×Ö·û£¬CP_UTF8±íÊ¾Ê¹ÓÃUTF-8´úÂëÒ³
+    // å°†å­—èŠ‚åºåˆ—å°è¯•è½¬æ¢ä¸ºå®½å­—ç¬¦ï¼ŒCP_UTF8è¡¨ç¤ºä½¿ç”¨UTF-8ä»£ç é¡µ
     int wideLen = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)data, length, NULL, 0);
     return (wideLen > 0);
 }
 
 /**
- * ½«GBK±àÂëµÄ×Ö·û´®×ª»»ÎªUTF-8±àÂë
- * @param gbkStr GBK±àÂëµÄ×Ö·û´®
- * @return ×ª»»ºóµÄUTF-8±àÂë×Ö·û´®
+ * å°†GBKç¼–ç çš„å­—ç¬¦ä¸²è½¬æ¢ä¸ºUTF-8ç¼–ç 
+ * @param gbkStr GBKç¼–ç çš„å­—ç¬¦ä¸²
+ * @return è½¬æ¢åçš„UTF-8ç¼–ç å­—ç¬¦ä¸²
  */
 std::string ConvertGBKToUTF8(const std::string& gbkStr) {
-    // Step 1: GBK ¡ú Unicode (UTF-16)
-    // Ê×ÏÈ½«GBK±àÂëµÄ×Ö·û´®×ª»»ÎªUnicode£¨UTF-16£©£¬936ÊÇGBK´úÂëÒ³µÄ±êÊ¶
+    // Step 1: GBK â†’ Unicode (UTF-16)
+    // é¦–å…ˆå°†GBKç¼–ç çš„å­—ç¬¦ä¸²è½¬æ¢ä¸ºUnicodeï¼ˆUTF-16ï¼‰ï¼Œ936æ˜¯GBKä»£ç é¡µçš„æ ‡è¯†
     int wlen = MultiByteToWideChar(936, 0, gbkStr.c_str(), -1, nullptr, 0);
     wchar_t* wbuf = new wchar_t[wlen];
     MultiByteToWideChar(936, 0, gbkStr.c_str(), -1, wbuf, wlen);
 
-    // Step 2: Unicode ¡ú UTF-8
-    // È»ºó½«Unicode£¨UTF-16£©±àÂëµÄ×Ö·û´®×ª»»ÎªUTF-8±àÂë
+    // Step 2: Unicode â†’ UTF-8
+    // ç„¶åå°†Unicodeï¼ˆUTF-16ï¼‰ç¼–ç çš„å­—ç¬¦ä¸²è½¬æ¢ä¸ºUTF-8ç¼–ç 
     int ulen = WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, nullptr, 0, nullptr, nullptr);
     char* ubuf = new char[ulen];
     WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, ubuf, ulen, nullptr, nullptr);
 
-    // ¹¹Ôì²¢·µ»Ø×ª»»ºóµÄUTF-8±àÂë×Ö·û´®
+    // æ„é€ å¹¶è¿”å›è½¬æ¢åçš„UTF-8ç¼–ç å­—ç¬¦ä¸²
     std::string utf8Str(ubuf);
-    // ÊÍ·Å×ª»»¹ı³ÌÖĞÊ¹ÓÃµÄÄÚ´æ
+    // é‡Šæ”¾è½¬æ¢è¿‡ç¨‹ä¸­ä½¿ç”¨çš„å†…å­˜
     delete[] wbuf;
     delete[] ubuf;
     return utf8Str;
+}
+
+
+/**
+ * å°†å®½å­—ç¬¦è½¬æ¢ä¸ºUTF-8ç¼–ç å­—ç¬¦ä¸²
+ *
+ * @return è½¬æ¢åçš„UTF-8ç¼–ç å­—ç¬¦ä¸²
+ */
+std::string WideToUtf8(const CString& ws)
+{
+    if (ws.IsEmpty()) return {};
+    int len = WideCharToMultiByte(CP_UTF8, 0, ws, ws.GetLength(), nullptr, 0, nullptr, nullptr);
+    if (len <= 0) return {};
+    std::string out;
+    out.resize(len);
+    LPSTR lpMultiByteStr;
+    lpMultiByteStr = new char[len];
+
+    WideCharToMultiByte(CP_UTF8, 0, ws, ws.GetLength(), lpMultiByteStr, len, nullptr, nullptr);
+    out = lpMultiByteStr;
+    delete lpMultiByteStr;
+    return out;
 }

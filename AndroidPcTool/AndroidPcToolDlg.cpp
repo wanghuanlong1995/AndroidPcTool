@@ -555,6 +555,8 @@ BOOL AndroidPcToolDlg::OnInitDialog()
     m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_TOP_ACTIVITY), L"adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"");
     m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_TOP_APK_VERSION), L"adb shell dumpsys package [packageName] | findstr version");
     m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_ENTER_SETTINGS), L"adb shell am start -a android.settings.APPLICATION_DETAILS_SETTINGS -d package: [packageName]");
+    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_SHOW_SECOND), L"adb shell settings put secure clock_seconds 1\n 状态栏的时间显示会精确到秒");
+    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_ALLOW_LAYOUT_DEBUGGING), L"adb shell setprop persist.debug.dalvik.vm.jdwp.enabled 1 \n允许所有程序的布局在Android Studio中调试和抓取（需要root权限，执行此允许之后重启生效）");
     //m_tooltip.AddTool(GetDlgItem(IDC_EDIT1), L"请输入用户名");
 
      // 试用期 & 激活状态
@@ -877,18 +879,6 @@ BOOL AndroidPcToolDlg::OnToolTipNotify(UINT id, NMHDR* pNMHDR, LRESULT* pResult)
         nID = ::GetDlgCtrlID((HWND)nID);
         if (nID)
         {
-            // 根据控件ID匹配提示文本
-            //switch (nID)
-            //{
-            //case IDC_BUTTON_TOP_ACTIVITY:
-            //	pTTT->lpszText = (LPTSTR)L"adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"";
-            //	break;
-            //case IDC_EDIT1:
-            //	pTTT->lpszText = (LPTSTR)L"请输入用户名";
-            //	break;
-            //default:
-            //	pTTT->lpszText = L"未知控件";
-            //}
             pTTT->hinst = AfxGetResourceHandle();
             return TRUE;
         }
@@ -905,6 +895,26 @@ BOOL AndroidPcToolDlg::PreTranslateMessage(MSG* pMsg)
         m_tooltip.RelayEvent(pMsg);
     }
     return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+void OpenEnvVarsWithAdmin() {
+    SHELLEXECUTEINFO sei = { sizeof(sei) };
+    sei.lpVerb = L"runas"; // 关键：请求管理员权限
+    sei.lpFile = L"rundll32.exe";
+    sei.lpParameters = L"sysdm.cpl,EditEnvironmentVariables";
+    sei.nShow = SW_SHOWNORMAL;
+
+    if (!ShellExecuteEx(&sei)) {
+        DWORD err = GetLastError();
+        if (err == ERROR_CANCELLED) {
+            // 用户拒绝了UAC提示
+            MessageBox(NULL, L"操作已取消：需要管理员权限修改系统环境变量。", L"权限不足", MB_ICONWARNING);
+        }
+        else {
+            // 其他错误处理
+            MessageBox(NULL, L"打开环境变量编辑器失败！", L"错误", MB_ICONERROR);
+        }
+    }
 }
 
 void AndroidPcToolDlg::OnOpenWeb(UINT nID)
@@ -1050,6 +1060,12 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
         case ID_WU_AI_PO_JIE:
             openWeb("https://www.52pojie.cn/");
             break;
+        case ID_KAN_XUE_LUN_TAN:
+            openWeb("https://bbs.kanxue.com/");
+            break;
+        case ID_XUE_JI_SHU:
+            openWeb("https://www.52xuejishu.com/");
+            break;
         case ID_DIR_SHOT:
             ShellExecute(NULL, L"open", pApp->GetProfileString(_T("Settings"), CONFIG_SHOT_PIC_PATH, _T("")), L"", L"", SW_SHOWNORMAL);
             break;
@@ -1101,16 +1117,23 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
             break;
         case IDC_MFCMENUBUTTON_KILL_ABD:
             // 杀死ADB服务器进程和所有ADB客户端进程
-            cmdAndShowEdit("adb kill-server && taskkill / F / IM adb.exe");
+            cmdAndShowEdit("adb kill-server && taskkill /F /IM adb.exe");
             break;
         case IDC_MFCMENUBUTTON_KILL_JAVA:
             // 杀死所有Java进程
-            cmdAndShowEdit("taskkill / F / IM java.exe");
+            cmdAndShowEdit("taskkill /F /IM java.exe");
             break;
         case ID_OPEN_ENV:
             // 打开环境变量编辑界面
-            ShellExecute(NULL, _T("open"), _T("rundll32.exe"), _T("sysdm.cpl,EditEnvironmentVariables"), NULL, SW_SHOWNORMAL);
+//            ShellExecute(NULL, _T("open"), _T("rundll32.exe"), _T("sysdm.cpl,EditEnvironmentVariables"), NULL, SW_SHOWNORMAL);
+            OpenEnvVarsWithAdmin();
             break;
+		case  IDC_BUTTON_SHOW_SECOND:
+			ShellExecuteA(NULL, "open", "adb", "shell settings put secure clock_seconds 1", "", SW_HIDE);
+			break;
+		case  IDC_BUTTON_ALLOW_LAYOUT_DEBUGGING:
+			ShellExecuteA(NULL, "open", "adb", "shell setprop persist.debug.dalvik.vm.jdwp.enabled 1", "", SW_HIDE);
+			break;
         case ID_getIpconfig:
             cmdAndShowEdit("ipconfig -all");
             break;
@@ -1612,16 +1635,6 @@ void AndroidPcToolDlg::ShowConfigItemPicker()
     PostMessage(WM_NULL);
 }
 
-static std::string WideToUtf8(const CString& ws)
-{
-    if (ws.IsEmpty()) return {};
-    int len = WideCharToMultiByte(CP_UTF8, 0, ws, ws.GetLength(), nullptr, 0, nullptr, nullptr);
-    if (len <= 0) return {};
-    std::string out;
-    out.resize(len);
-    //WideCharToMultiByte(CP_UTF8, 0, ws, ws.GetLength(), out.data(), len, nullptr, nullptr);
-    return out;
-}
 
 void AndroidPcToolDlg::ExportAllSettingsToFile()
 {
