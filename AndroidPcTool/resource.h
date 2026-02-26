@@ -114,6 +114,8 @@
 #define IDC_BUTTON_REBOOT_EDL           1070
 #define IDC_CHECK1                      1071
 #define IDC_CHECK_INSTALL_G             1071
+#define IDC_BUTTON_SHOW_SECOND          1072
+#define IDC_BUTTON_ALLOW_LAYOUT_DEBUGGING 1073
 #define IDC_CHECK_LOGIN                 1113
 #define ID_32812                        31812
 #define ID_32813                        31813
@@ -183,7 +185,6 @@
 #define ID_DIR_SHOT                     32830
 #define ID_DIR_LOG                      32831
 #define ID_DIR_APK                      32832
-#define ID_TRAY_COMMON_PATH_BASE        40000
 #define ID_LX_BRANCH                    32833
 #define ID_32834                        32834
 #define ID_32835                        32835
@@ -197,6 +198,9 @@
 #define ID_ACTIVATE                     32843
 #define ID_CONFIG_GET_ITEM              32844
 #define ID_CONFIG_EXPORT_ALL            32845
+#define ID_XUE_JI_SHU                   32846
+#define ID_KAN_XUE_LUN_TAN              32847
+#define ID_TRAY_COMMON_PATH_BASE        40000
 #define ID_CONFIG_ITEM_BASE             41000
 
 // Next default values for new objects
@@ -204,8 +208,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        137
-#define _APS_NEXT_COMMAND_VALUE         32842
-#define _APS_NEXT_CONTROL_VALUE         1072
+#define _APS_NEXT_COMMAND_VALUE         32848
+#define _APS_NEXT_CONTROL_VALUE         1074
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

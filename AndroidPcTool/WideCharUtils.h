@@ -2,24 +2,32 @@
 #include <string>
 
 /**
- * ÅĞ¶Ï¸ø¶¨µÄÊı¾İÊÇ·ñÎªGBK±àÂë
- * @param data Ö¸Ïò´ı¼ì²âÊı¾İµÄÖ¸Õë
- * @param length ´ı¼ì²âÊı¾İµÄ³¤¶È
- * @return Èç¹ûÊı¾İÊÇGBK±àÂë£¬Ôò·µ»ØTRUE£¬·ñÔò·µ»ØFALSE
+ * åˆ¤æ–­ç»™å®šçš„æ•°æ®æ˜¯å¦ä¸ºGBKç¼–ç 
+ * @param data æŒ‡å‘å¾…æ£€æµ‹æ•°æ®çš„æŒ‡é’ˆ
+ * @param length å¾…æ£€æµ‹æ•°æ®çš„é•¿åº¦
+ * @return å¦‚æœæ•°æ®æ˜¯GBKç¼–ç ï¼Œåˆ™è¿”å›TRUEï¼Œå¦åˆ™è¿”å›FALSE
  */
 BOOL IsGBK(const BYTE* data, int length);
 
 /**
- * ÅĞ¶Ï¸ø¶¨µÄÊı¾İÊÇ·ñÎªUTF-8±àÂë
- * @param data Ö¸Ïò´ı¼ì²âÊı¾İµÄÖ¸Õë
- * @param length ´ı¼ì²âÊı¾İµÄ³¤¶È
- * @return Èç¹ûÊı¾İÊÇUTF-8±àÂë£¬Ôò·µ»ØTRUE£¬·ñÔò·µ»ØFALSE
+ * åˆ¤æ–­ç»™å®šçš„æ•°æ®æ˜¯å¦ä¸ºUTF-8ç¼–ç 
+ * @param data æŒ‡å‘å¾…æ£€æµ‹æ•°æ®çš„æŒ‡é’ˆ
+ * @param length å¾…æ£€æµ‹æ•°æ®çš„é•¿åº¦
+ * @return å¦‚æœæ•°æ®æ˜¯UTF-8ç¼–ç ï¼Œåˆ™è¿”å›TRUEï¼Œå¦åˆ™è¿”å›FALSE
  */
 BOOL IsUTF8(const BYTE* data, int length);
 
 /**
- * ½«GBK±àÂëµÄ×Ö·û´®×ª»»ÎªUTF-8±àÂë
- * @param gbkStr GBK±àÂëµÄ×Ö·û´®
- * @return ×ª»»ºóµÄUTF-8±àÂë×Ö·û´®
+ * å°†GBKç¼–ç çš„å­—ç¬¦ä¸²è½¬æ¢ä¸ºUTF-8ç¼–ç 
+ * @param gbkStr GBKç¼–ç çš„å­—ç¬¦ä¸²
+ * @return è½¬æ¢åçš„UTF-8ç¼–ç å­—ç¬¦ä¸²
  */
 std::string ConvertGBKToUTF8(const std::string& gbkStr);
+
+
+/**
+ * å°†å®½å­—ç¬¦è½¬æ¢ä¸ºUTF-8ç¼–ç å­—ç¬¦ä¸²
+ *
+ * @return è½¬æ¢åçš„UTF-8ç¼–ç å­—ç¬¦ä¸²
+ */
+std::string WideToUtf8(const CString& ws);
