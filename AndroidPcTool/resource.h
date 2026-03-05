@@ -11,9 +11,14 @@
 #define IDR_MENU_MAIN                   130
 #define IDD_DIALOG_MAIN_PATH_CONFIG     132
 #define IDR_TRAY_MENU                   135
+#define IDD_DIALOG_BATTERY_SETTINGS     137
+#define IDD_DIALOG_BUILD_PROP           139
+#define IDD_DIALOG_SETTINGS_CONFIG      141
 #define IDC_BUTTON1                     1000
 #define IDC_BUTTON_OPEN_SCR_CPY         1000
 #define IDC_BUTTON_SAVE                 1000
+#define IDC_BUTTON_BATTERY_SET          1000
+#define IDC_BUTTON_READ_BUILD_PROP      1000
 #define IDC_BUTTON_SHOT_AND_PULL        1001
 #define IDC_BUTTON_CANCEL               1001
 #define IDC_EDIT_INPUT                  1002
@@ -116,6 +121,16 @@
 #define IDC_CHECK_INSTALL_G             1071
 #define IDC_BUTTON_SHOW_SECOND          1072
 #define IDC_BUTTON_ALLOW_LAYOUT_DEBUGGING 1073
+#define IDC_TAB_MAIN                    1074
+#define IDC_BUTTON_BATTERY_RESET        1075
+#define IDC_BUTTON3                     1076
+#define IDC_COMBO1                      1077
+#define IDC_BUTTON_WRITER_PROP          1078
+#define IDC_COMBO2                      1079
+#define IDC_COMBO_BUILD_PROP_LIST       1080
+#define IDC_EDIT_BUILD_PROP_VALUE       1081
+#define IDC_EDIT_BATTERY_VALUE          1082
+#define IDC_BUTTON_BATTERY_GET          1083
 #define IDC_CHECK_LOGIN                 1113
 #define ID_32812                        31812
 #define ID_32813                        31813
@@ -207,9 +222,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        137
+#define _APS_NEXT_RESOURCE_VALUE        143
 #define _APS_NEXT_COMMAND_VALUE         32848
-#define _APS_NEXT_CONTROL_VALUE         1074
+#define _APS_NEXT_CONTROL_VALUE         1084
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
