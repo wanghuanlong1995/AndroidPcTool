@@ -45,6 +45,15 @@
     <ClInclude Include="WideCharUtils.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CTabPageBatterySet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabPageBuildProp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabPageSettingsConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AndroidPcTool.cpp">
@@ -63,6 +72,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WideCharUtils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabPageBatterySet.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabPageBuildProp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabPageSettingsConfig.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

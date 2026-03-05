@@ -188,6 +188,9 @@
     <ClInclude Include="AndroidPcTool.h" />
     <ClInclude Include="AndroidPcToolDlg.h" />
     <ClInclude Include="ConfigSet.h" />
+    <ClInclude Include="CTabPageBatterySet.h" />
+    <ClInclude Include="CTabPageBuildProp.h" />
+    <ClInclude Include="CTabPageSettingsConfig.h" />
     <ClInclude Include="DragEdit.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="PathAndUseConfigDlg.h" />
@@ -199,6 +202,9 @@
   <ItemGroup>
     <ClCompile Include="AndroidPcTool.cpp" />
     <ClCompile Include="AndroidPcToolDlg.cpp" />
+    <ClCompile Include="CTabPageBatterySet.cpp" />
+    <ClCompile Include="CTabPageBuildProp.cpp" />
+    <ClCompile Include="CTabPageSettingsConfig.cpp" />
     <ClCompile Include="DragEdit.cpp" />
     <ClCompile Include="PathAndUseConfigDlg.cpp" />
     <ClCompile Include="pch.cpp">

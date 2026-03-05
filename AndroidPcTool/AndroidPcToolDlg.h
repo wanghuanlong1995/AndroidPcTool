@@ -6,6 +6,10 @@
 #include"DragEdit.h"
 #include "WideCharUtils.h"
 
+#include "CTabPageBatterySet.h"
+#include "CTabPageBuildProp.h"
+#include "CTabPageSettingsConfig.h"
+
 // AndroidPcToolDlg 对话框
 class AndroidPcToolDlg : public CDialogEx
 {
@@ -44,6 +48,13 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	LRESULT AndroidPcToolDlg::OnTrayIcon(WPARAM wParam, LPARAM lParam);
+
+	// Tab控件对象
+	CTabCtrl m_tabMain;
+	CTabPageBatterySet m_PageBatterySet;
+	CTabPageBuildProp m_PageBuildProp;
+	CTabPageSettingsConfig m_PageSettingsConfig;
+	CRect m_tabRect;
 
 	// 消息处理函数声明
 	BOOL OnToolTipNotify(UINT id, NMHDR* pNMHDR, LRESULT* pResult);
@@ -98,6 +109,8 @@ public:
 	afx_msg void OnBnClickedButtonPull();
 	// 安装apk时授予全部权限
 	BOOL m_install_g;
+
+	afx_msg void OnTcnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult);
 
 private:
 	void CheckForUpdateGitCode();

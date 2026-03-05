@@ -381,20 +381,21 @@ AndroidPcToolDlg::AndroidPcToolDlg(CWnd* pParent /*=nullptr*/)
 
 void AndroidPcToolDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_CHECK_TOP_SELF, m_isTopSelft);
-	DDX_Check(pDX, IDC_CHECK_AUTO_OPEN_DIR, m_isAutoOpenPullDir);
-	DDX_Text(pDX, IDC_EDIT_SHOW_RESULT, m_editShowResut);
-	DDX_Check(pDX, IDC_CHECK_SCE_CPY_TOP, m_isScrcpyTop);
-	DDX_Control(pDX, IDC_RADIO_COMMON_LOG, m_radionCommonLogs);
-	DDX_Control(pDX, IDC_EDIT_INPUT, m_dragInputEdit);
-	DDX_Text(pDX, IDC_EDIT_INPUT, m_editInputPath);
-	DDX_Check(pDX, IDC_CHECK_IS_AUTO_INSTALL, m_isAutoInstallApk);
-	DDX_Control(pDX, IDC_COMBO_DEVICE_DIR, m_comboBoxDeviceDir);
-	DDX_CBString(pDX, IDC_COMBO_DEVICE_DIR, m_deviceDIr);
-	DDX_Text(pDX, IDC_STATIC_FILE_MD5, m_StringMd5);
-	DDX_Check(pDX, IDC_CHECK_MIN_NO_TASK_SHOW, m_MinNoTaskShow);
-	DDX_Check(pDX, IDC_CHECK_INSTALL_G, m_install_g);
+    CDialogEx::DoDataExchange(pDX);
+    DDX_Check(pDX, IDC_CHECK_TOP_SELF, m_isTopSelft);
+    DDX_Check(pDX, IDC_CHECK_AUTO_OPEN_DIR, m_isAutoOpenPullDir);
+    DDX_Text(pDX, IDC_EDIT_SHOW_RESULT, m_editShowResut);
+    DDX_Check(pDX, IDC_CHECK_SCE_CPY_TOP, m_isScrcpyTop);
+    DDX_Control(pDX, IDC_RADIO_COMMON_LOG, m_radionCommonLogs);
+    DDX_Control(pDX, IDC_EDIT_INPUT, m_dragInputEdit);
+    DDX_Text(pDX, IDC_EDIT_INPUT, m_editInputPath);
+    DDX_Check(pDX, IDC_CHECK_IS_AUTO_INSTALL, m_isAutoInstallApk);
+    DDX_Control(pDX, IDC_COMBO_DEVICE_DIR, m_comboBoxDeviceDir);
+    DDX_CBString(pDX, IDC_COMBO_DEVICE_DIR, m_deviceDIr);
+    DDX_Text(pDX, IDC_STATIC_FILE_MD5, m_StringMd5);
+    DDX_Check(pDX, IDC_CHECK_MIN_NO_TASK_SHOW, m_MinNoTaskShow);
+    DDX_Check(pDX, IDC_CHECK_INSTALL_G, m_install_g);
+    DDX_Control(pDX, IDC_TAB_MAIN, m_tabMain);
 }
 
 BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
@@ -418,6 +419,7 @@ BEGIN_MESSAGE_MAP(AndroidPcToolDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COMBO_DEVICE_DIR, &AndroidPcToolDlg::OnCbnSelchangeComboDeviceDir)
 	ON_COMMAND_RANGE(10, 52815,&AndroidPcToolDlg::OnOpenWeb)
 	ON_BN_CLICKED(IDC_BUTTON_PULL, &AndroidPcToolDlg::OnBnClickedButtonPull)
+    ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_MAIN, &AndroidPcToolDlg::OnTcnSelchangeTabMain)
 END_MESSAGE_MAP()
 
 
@@ -559,89 +561,114 @@ BOOL AndroidPcToolDlg::OnInitDialog()
     m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_ALLOW_LAYOUT_DEBUGGING), L"adb shell setprop persist.debug.dalvik.vm.jdwp.enabled 1 \n允许所有程序的布局在Android Studio中调试和抓取（需要root权限，执行此允许之后重启生效）");
     //m_tooltip.AddTool(GetDlgItem(IDC_EDIT1), L"请输入用户名");
 
+    m_tabMain.InsertItem(0, _T("配置读写"));
+    m_tabMain.InsertItem(1, _T("电量设置"));
+    m_tabMain.InsertItem(2, _T("设置读写"));
+    // 2. 获取Tab控件客户区大小（排除标签头部）
+    m_tabMain.GetClientRect(&m_tabRect);
+    // 调整矩形，让子对话框完全填充Tab控件客户区
+    m_tabRect.top += 20;    // 跳过标签头部高度
+    m_tabRect.left += 1;
+    m_tabRect.right -= 1;
+    m_tabRect.bottom -= 1;
+
+    // 3. 创建并显示第一个页面
+    m_PageBuildProp.Create(IDD_DIALOG_BUILD_PROP, &m_tabMain);
+    m_PageBuildProp.MoveWindow(&m_tabRect);
+    m_PageBuildProp.ShowWindow(SW_SHOW);
+
+    m_PageBatterySet.Create(IDD_DIALOG_BATTERY_SETTINGS, &m_tabMain);
+    m_PageBatterySet.MoveWindow(&m_tabRect);
+    m_PageBatterySet.ShowWindow(SW_HIDE);
+
+    m_PageSettingsConfig.Create(IDD_DIALOG_SETTINGS_CONFIG, &m_tabMain);
+    m_PageSettingsConfig.MoveWindow(&m_tabRect);
+    m_PageSettingsConfig.ShowWindow(SW_HIDE);
+
+
      // 试用期 & 激活状态
-    {
-    	bool activated = false;
-    	const CString machineCode = GetMachineCode();
-    	const CString actTime = pApp->GetProfileString(_T("Settings"), CONFIG_ACTIVATION_TIME, _T(""));
-    	const CString actCode = pApp->GetProfileString(_T("Settings"), CONFIG_ACTIVATION_CODE, _T(""));
+    //{
+    //	bool activated = false;
+    //	const CString machineCode = GetMachineCode();
+    //	const CString actTime = pApp->GetProfileString(_T("Settings"), CONFIG_ACTIVATION_TIME, _T(""));
+    //	const CString actCode = pApp->GetProfileString(_T("Settings"), CONFIG_ACTIVATION_CODE, _T(""));
 
-    	if (!machineCode.IsEmpty() && !actTime.IsEmpty() && !actCode.IsEmpty()) {
-    		const std::string expected = Md5HexLower(std::string(CStringA(machineCode + actTime).GetString()));
-    		if (!expected.empty() && actCode.CompareNoCase(CString(expected.c_str())) == 0) {
-    			activated = true;
-    		}
-    	}
+    //	if (!machineCode.IsEmpty() && !actTime.IsEmpty() && !actCode.IsEmpty()) {
+    //		const std::string expected = Md5HexLower(std::string(CStringA(machineCode + actTime).GetString()));
+    //		if (!expected.empty() && actCode.CompareNoCase(CString(expected.c_str())) == 0) {
+    //			activated = true;
+    //		}
+    //	}
 
-    	CString caption;
-    	GetWindowText(caption);
-    	const int suffixPos = caption.Find(_T(" ("));
-    	if (suffixPos >= 0) caption = caption.Left(suffixPos);
+    //	CString caption;
+    //	GetWindowText(caption);
+    //	const int suffixPos = caption.Find(_T(" ("));
+    //	if (suffixPos >= 0) caption = caption.Left(suffixPos);
 
-    	if (activated) {
-    		SetWindowText(caption + _T(" (已激活)"));
-    	}
-    	else {
-    		CString firstRun = pApp->GetProfileString(_T("Settings"), CONFIG_FIRST_RUN_DATE, _T(""));
-    		if (firstRun.IsEmpty()) {
-    			firstRun = TodayYmd();
-    			pApp->WriteProfileString(_T("Settings"), CONFIG_FIRST_RUN_DATE, firstRun);
-    		}
+    //	if (activated) {
+    //		SetWindowText(caption + _T(" (已激活)"));
+    //	}
+    //	else {
+    //		CString firstRun = pApp->GetProfileString(_T("Settings"), CONFIG_FIRST_RUN_DATE, _T(""));
+    //		if (firstRun.IsEmpty()) {
+    //			firstRun = TodayYmd();
+    //			pApp->WriteProfileString(_T("Settings"), CONFIG_FIRST_RUN_DATE, firstRun);
+    //		}
 
-    		SYSTEMTIME stFirst{};
-    		if (!TryParseYmd(firstRun, stFirst)) {
-    			stFirst = {};
-    			GetLocalTime(&stFirst);
-    			firstRun = TodayYmd();
-    			pApp->WriteProfileString(_T("Settings"), CONFIG_FIRST_RUN_DATE, firstRun);
-    		}
+    //		SYSTEMTIME stFirst{};
+    //		if (!TryParseYmd(firstRun, stFirst)) {
+    //			stFirst = {};
+    //			GetLocalTime(&stFirst);
+    //			firstRun = TodayYmd();
+    //			pApp->WriteProfileString(_T("Settings"), CONFIG_FIRST_RUN_DATE, firstRun);
+    //		}
 
-    		const SYSTEMTIME stEnd = AddMonthsClamped(stFirst, 6);
-    		COleDateTime dtNow = COleDateTime::GetCurrentTime();
-    		COleDateTime dtEnd = ToOleDate(stEnd);
-    		COleDateTimeSpan span = dtEnd - dtNow;
-    		const int daysLeft = (int)span.GetTotalDays();
+    //		const SYSTEMTIME stEnd = AddMonthsClamped(stFirst, 6);
+    //		COleDateTime dtNow = COleDateTime::GetCurrentTime();
+    //		COleDateTime dtEnd = ToOleDate(stEnd);
+    //		COleDateTimeSpan span = dtEnd - dtNow;
+    //		const int daysLeft = (int)span.GetTotalDays();
 
-    		if (daysLeft >= 0) {
-    			CString s;
-    			s.Format(_T(" (试用剩余%d天)"), daysLeft);
-    			SetWindowText(caption + s);
-    		}
-    		else {
-    			SetWindowText(caption + _T(" (试用已到期，请在“帮助->激活”中激活)"));
+    //		if (daysLeft >= 0) {
+    //			CString s;
+    //			s.Format(_T(" (试用剩余%d天)"), daysLeft);
+    //			SetWindowText(caption + s);
+    //		}
+    //		else {
+    //			SetWindowText(caption + _T(" (试用已到期，请在“帮助->激活”中激活)"));
 
-    			// 到期后禁用主要功能（保留菜单“激活”入口）
-    			static const UINT kDisableIds[] = {
-    				IDC_BUTTON_SHOT_AND_PULL,
-    				IDC_BUTTON_OPEN_SCR_CPY,
-    				IDC_BUTTON_TOP_ACTIVITY,
-    				IDC_BUTTON_TOP_PATH,
-    				IDC_BUTTON_TOP_APK_VERSION,
-    				IDC_BUTTON_PULL_TOP_APK,
-    				IDC_BUTTON_CLEAR_APP,
-    				IDC_BUTTON_ENTER_SETTINGS,
-    				IDC_MFCMENUBUTTON_KILL_ABD,
-    				IDC_MFCMENUBUTTON_KILL_JAVA,
-    				IDC_BUTTON_UI_VIEWER,
-    				IDC_BUTTON_PX_COOK,
-    				IDC_BUTTON_GIF,
-    				IDC_BUTTON_FAN_HUN_XIAO,
-    				IDC_BUTTON_OPEN_JADX,
-    				IDC_BUTTON_INSTALL_APK,
-    				IDC_BUTTON_PULL,
-    				IDC_BUTTON_PUSH,
-    				IDC_BUTTON_LS,
-    				IDC_MFC_MENUBUTTON_PULL_LOG,
-    				IDC_BUTTON_DEL_LOG,
-    			};
-    			for (UINT id : kDisableIds) {
-    				if (CWnd* w = GetDlgItem(id)) w->EnableWindow(FALSE);
-    			}
+    //			// 到期后禁用主要功能（保留菜单“激活”入口）
+    //			static const UINT kDisableIds[] = {
+    //				IDC_BUTTON_SHOT_AND_PULL,
+    //				IDC_BUTTON_OPEN_SCR_CPY,
+    //				IDC_BUTTON_TOP_ACTIVITY,
+    //				IDC_BUTTON_TOP_PATH,
+    //				IDC_BUTTON_TOP_APK_VERSION,
+    //				IDC_BUTTON_PULL_TOP_APK,
+    //				IDC_BUTTON_CLEAR_APP,
+    //				IDC_BUTTON_ENTER_SETTINGS,
+    //				IDC_MFCMENUBUTTON_KILL_ABD,
+    //				IDC_MFCMENUBUTTON_KILL_JAVA,
+    //				IDC_BUTTON_UI_VIEWER,
+    //				IDC_BUTTON_PX_COOK,
+    //				IDC_BUTTON_GIF,
+    //				IDC_BUTTON_FAN_HUN_XIAO,
+    //				IDC_BUTTON_OPEN_JADX,
+    //				IDC_BUTTON_INSTALL_APK,
+    //				IDC_BUTTON_PULL,
+    //				IDC_BUTTON_PUSH,
+    //				IDC_BUTTON_LS,
+    //				IDC_MFC_MENUBUTTON_PULL_LOG,
+    //				IDC_BUTTON_DEL_LOG,
+    //			};
+    //			for (UINT id : kDisableIds) {
+    //				if (CWnd* w = GetDlgItem(id)) w->EnableWindow(FALSE);
+    //			}
 
-    			MessageBox(_T("试用期已到期，请在菜单“帮助->激活”完成激活。"), _T("提示"), MB_OK | MB_ICONWARNING);
-    		}
-    	}
-    }
+    //			MessageBox(_T("试用期已到期，请在菜单“帮助->激活”完成激活。"), _T("提示"), MB_OK | MB_ICONWARNING);
+    //		}
+    //	}
+    //}
 
     return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -773,6 +800,33 @@ LRESULT AndroidPcToolDlg::OnTrayIcon(WPARAM wParam, LPARAM lParam)
         }
     }
     return 0;
+}
+
+
+// 标签切换事件处理
+void AndroidPcToolDlg::OnTcnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    switch (m_tabMain.GetCurSel())
+    {
+    case 0: // 切换到第一个页面
+        m_PageBuildProp.ShowWindow(SW_SHOW);
+        m_PageBatterySet.ShowWindow(SW_HIDE);
+        m_PageSettingsConfig.ShowWindow(SW_HIDE);
+        break;
+    case 1: // 切换到第二个页面
+        m_PageBuildProp.ShowWindow(SW_HIDE);
+        m_PageBatterySet.ShowWindow(SW_SHOW);
+        m_PageSettingsConfig.ShowWindow(SW_HIDE);
+        break;
+    case 2: // 切换到第是三个页面
+        m_PageBatterySet.ShowWindow(SW_HIDE);
+        m_PageBuildProp.ShowWindow(SW_HIDE);
+        m_PageSettingsConfig.ShowWindow(SW_SHOW);
+        break;
+    default:
+        break;
+    }
+    *pResult = 0;
 }
 
 
@@ -1101,11 +1155,14 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
             break;
         case IDC_BUTTON_REBOOT_P:
             // 通过ADB命令重启设备
-            ShellExecuteA(NULL, "open", "adb", "reboot", "-p", SW_HIDE);
+            ShellExecuteA(NULL, "open", "adb", "reboot -p", "", SW_HIDE);
             break;
         case IDC_BUTTON_REBOOT_EDL:
             // 通过ADB命令重启设备
-            ShellExecuteA(NULL, "open", "adb", "reboot", "edl", SW_HIDE);
+            ShellExecuteA(NULL, "open", "adb", "reboot edl", "", SW_HIDE);
+        case IDC_BUTTON_remount:
+            // 通过ADB命令重启设备
+            ShellExecuteA(NULL, "open", "adb", "reboot remount", "", SW_HIDE);
             break;
         case IDC_BUTTON_FASTBOOT_REBOOT:
             // 通过Fastboot命令重启设备
@@ -1295,8 +1352,23 @@ void AndroidPcToolDlg::OnBnClickedButtonPullTopApk()
     m_editShowResut.Trim();  // 去除首尾空白字符
     m_editShowResut.Replace(_T("\r\n"), _T(""));  // 去除换行符
     m_editShowResut.Replace(_T("package:"), _T(""));// 去除多余的前缀
-    std::string command = "adb pull " + CStringA(m_editShowResut);
-    cmdAndShowEdit(command.c_str());
+
+    CFolderPickerDialog folderDlg;
+    folderDlg.m_ofn.lpstrTitle = _T("选择导出到的PC目录");
+    if (folderDlg.DoModal() != IDOK) {
+        return;
+    }
+
+    const CString folderPath = folderDlg.GetFolderPath();
+    if (folderPath.IsEmpty()) return;
+
+    CStringA cmd;
+    cmd.Format("adb pull \"%s\" \"%s\"", CStringA(m_editShowResut).GetString(), CStringA(folderPath).GetString());
+    cmdAndShowEdit(cmd);
+
+    if (m_isAutoOpenPullDir) {
+        ShellExecute(NULL, _T("open"), folderPath, _T(""), _T(""), SW_SHOWNORMAL);
+    }
 }
 
 void AndroidPcToolDlg::OnBnClickedButtonClearApp()
