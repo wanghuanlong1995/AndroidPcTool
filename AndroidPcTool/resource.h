@@ -125,12 +125,17 @@
 #define IDC_BUTTON_BATTERY_RESET        1075
 #define IDC_BUTTON3                     1076
 #define IDC_COMBO1                      1077
+#define IDC_COMBO_CONFIG_KET_LIST       1077
 #define IDC_BUTTON_WRITER_PROP          1078
 #define IDC_COMBO2                      1079
+#define IDC_COMBO_CONFIG_TYPE           1079
+#define IDC_COMBO_CONFIG_TYPE_LIST      1079
 #define IDC_COMBO_BUILD_PROP_LIST       1080
 #define IDC_EDIT_BUILD_PROP_VALUE       1081
 #define IDC_EDIT_BATTERY_VALUE          1082
 #define IDC_BUTTON_BATTERY_GET          1083
+#define IDC_STATIC_TYPE_FROM            1084
+#define IDC_EDIT_VALUE                  1085
 #define IDC_CHECK_LOGIN                 1113
 #define ID_32812                        31812
 #define ID_32813                        31813
@@ -215,6 +220,32 @@
 #define ID_CONFIG_EXPORT_ALL            32845
 #define ID_XUE_JI_SHU                   32846
 #define ID_KAN_XUE_LUN_TAN              32847
+#define ID_AI32848                      32848
+#define ID_AI_Trae_CN                   32849
+#define ID_AI32850                      32850
+#define ID_AI32851                      32851
+#define ID_OPENCLAW_32852               32852
+#define ID_OPENCLAW_GITHUP              32853
+#define ID_OPENCLAW_32854               32854
+#define ID_OPENCLAW_                    32855
+#define ID_OPENCLAW_OFFICE              32856
+#define ID_OPENCLAW_SKILL               32857
+#define ID_AI_Cursor                    32858
+#define ID_AI32859                      32859
+#define ID_AI_GUI_JI_LIU_DONG           32860
+#define ID_AI32861                      32861
+#define ID_AI_XIONG_MAO                 32862
+#define ID_AI32863                      32863
+#define ID_AI_KIMI                      32864
+#define ID_32865                        32865
+#define ID_FOFA                         32866
+#define ID_32867                        32867
+#define ID_ID_BOKEYUAN                  32868
+#define ID_BOKEYUAN                     32869
+#define ID_32870                        32870
+#define ID_GRADLE_PROXY                 32871
+#define ID_32872                        32872
+#define ID_trace                        32873
 #define ID_TRAY_COMMON_PATH_BASE        40000
 #define ID_CONFIG_ITEM_BASE             41000
 
@@ -223,8 +254,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        143
-#define _APS_NEXT_COMMAND_VALUE         32848
-#define _APS_NEXT_CONTROL_VALUE         1084
+#define _APS_NEXT_COMMAND_VALUE         32874
+#define _APS_NEXT_CONTROL_VALUE         1086
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

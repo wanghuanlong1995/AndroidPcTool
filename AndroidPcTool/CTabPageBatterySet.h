@@ -19,7 +19,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-
+	virtual BOOL OnInitDialog();
 	DECLARE_MESSAGE_MAP()
 public:
 	// 电量值

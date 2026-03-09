@@ -531,6 +531,30 @@ BOOL AndroidPcToolDlg::OnInitDialog()
     // 控件初始化
     m_radionCommonLogs.SetCheck(TRUE);
 
+    CString iniPath;
+    ::GetModuleFileName(nullptr, iniPath.GetBuffer(MAX_PATH), MAX_PATH);
+    iniPath.ReleaseBuffer();
+    iniPath = iniPath.Left(iniPath.ReverseFind('\\') + 1) + _T("AndroidPcToolSettings.ini");
+
+    // 2. 初始化配置读取器
+    IniConfigReader configReader(iniPath);
+
+    // 3. 填充BuildProp ComboBox
+    std::vector<CString> buildPropItems;
+
+    if (configReader.GetSectionItems(_T("DeviceDir"), buildPropItems))
+    {
+        m_comboBoxDeviceDir.ResetContent();
+        for (const auto& item : buildPropItems)
+        {
+            // 跳过以#开头的注释行
+            if (!item.IsEmpty() && item[0] != _T('#'))
+            {
+                m_comboBoxDeviceDir.AddString(item);
+            }
+        }
+    }
+
     m_comboBoxDeviceDir.InsertString(0, L"system/app/HwLauncher6");
     m_comboBoxDeviceDir.InsertString(0, L"system/app/Bluetooth");
     m_comboBoxDeviceDir.InsertString(0, L"system/framework");
@@ -546,20 +570,6 @@ BOOL AndroidPcToolDlg::OnInitDialog()
 
     m_comboBoxDeviceDir.SetCurSel(0);
 
-
-    // 初始化工具提示控件
-    m_tooltip.Create(this);
-    // 设置提示样式：气泡样式 + 总是显示
-    m_tooltip.SetMaxTipWidth(SHRT_MAX);
-    m_tooltip.Activate(TRUE);
-
-    // 为具体控件添加提示（控件ID和提示文本对应）
-    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_TOP_ACTIVITY), L"adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"");
-    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_TOP_APK_VERSION), L"adb shell dumpsys package [packageName] | findstr version");
-    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_ENTER_SETTINGS), L"adb shell am start -a android.settings.APPLICATION_DETAILS_SETTINGS -d package: [packageName]");
-    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_SHOW_SECOND), L"adb shell settings put secure clock_seconds 1\n 状态栏的时间显示会精确到秒");
-    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_ALLOW_LAYOUT_DEBUGGING), L"adb shell setprop persist.debug.dalvik.vm.jdwp.enabled 1 \n允许所有程序的布局在Android Studio中调试和抓取（需要root权限，执行此允许之后重启生效）");
-    //m_tooltip.AddTool(GetDlgItem(IDC_EDIT1), L"请输入用户名");
 
     m_tabMain.InsertItem(0, _T("配置读写"));
     m_tabMain.InsertItem(1, _T("电量设置"));
@@ -584,6 +594,21 @@ BOOL AndroidPcToolDlg::OnInitDialog()
     m_PageSettingsConfig.Create(IDD_DIALOG_SETTINGS_CONFIG, &m_tabMain);
     m_PageSettingsConfig.MoveWindow(&m_tabRect);
     m_PageSettingsConfig.ShowWindow(SW_HIDE);
+
+    // 初始化工具提示控件
+    m_tooltip.Create(this);
+    // 设置提示样式：气泡样式 + 总是显示
+    m_tooltip.SetMaxTipWidth(SHRT_MAX);
+    m_tooltip.Activate(TRUE);
+
+    // 为具体控件添加提示（控件ID和提示文本对应）
+    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_TOP_ACTIVITY), L"adb shell dumpsys \"activity top | grep ACTIVITY | tail -n 1\"");
+    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_TOP_APK_VERSION), L"adb shell dumpsys package [packageName] | findstr version");
+    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_ENTER_SETTINGS), L"adb shell am start -a android.settings.APPLICATION_DETAILS_SETTINGS -d package: [packageName]");
+    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_SHOW_SECOND), L"adb shell settings put secure clock_seconds 1\n 状态栏的时间显示会精确到秒");
+    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_ALLOW_LAYOUT_DEBUGGING), L"adb shell setprop persist.debug.dalvik.vm.jdwp.enabled 1 \n允许所有程序的布局在Android Studio中调试和抓取（需要root权限，执行此允许之后重启生效）");
+    m_tooltip.AddTool(GetDlgItem(IDC_BUTTON_READ_BUILD_PROP), L"adb shell settings system/secure/global get <KEY>");
+
 
 
      // 试用期 & 激活状态
@@ -1082,6 +1107,10 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
             // 打开MP4转MP3工具网站
             openWeb("https://mp4tomp3.org/");
             break;
+        case ID_trace:
+            // 打开MP4转MP3工具网站
+            openWeb("https://ui.perfetto.dev");
+            break;
         case ID_LANHU_UI:
             // 打开兰湖设计协作平台网站
             openWeb("https://lanhuapp.com/dashboard/#/item");
@@ -1105,6 +1134,30 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
         case ID_GIT_CODE_SELF:
             openWeb("https://gitcode.com/wanghuanlong/AndroidPcTool");
             break;
+        case ID_AI_Trae_CN:
+            openWeb("https://www.trae.cn/");
+            break;
+        case ID_AI_Cursor:
+            openWeb("https://cursor.com/cn");
+            break;
+        case ID_OPENCLAW_OFFICE:
+            openWeb("https://openclaw.ai/");
+            break;
+        case ID_OPENCLAW_GITHUP:
+            openWeb("https://github.com/openclaw/openclaw");
+            break;
+        case ID_OPENCLAW_SKILL:
+            openWeb("https://github.com/VoltAgent/awesome-openclaw-skills");
+            break;
+        case ID_AI_GUI_JI_LIU_DONG:
+            openWeb("https://www.siliconflow.cn/");
+            break;
+        case ID_AI_XIONG_MAO:
+            openWeb("https://www.tukuppt.com/index/aigc");
+            break;
+        case ID_AI_KIMI:
+            openWeb("https://www.kimi.com/");
+            break;
         case ID_VERSION_UPDATE:
             CheckForUpdateGitCode();
             break;
@@ -1119,6 +1172,12 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
             break;
         case ID_XUE_JI_SHU:
             openWeb("https://www.52xuejishu.com/");
+            break;
+        case ID_FOFA:
+            openWeb("https://en.fofa.info/");
+            break;
+        case ID_BOKEYUAN:
+            openWeb("https://www.cnblogs.com/HGNET/p/18531891/");
             break;
         case ID_DIR_SHOT:
             ShellExecute(NULL, L"open", pApp->GetProfileString(_T("Settings"), CONFIG_SHOT_PIC_PATH, _T("")), L"", L"", SW_SHOWNORMAL);
@@ -1193,6 +1252,9 @@ void AndroidPcToolDlg::OnOpenWeb(UINT nID)
 			break;
         case ID_getIpconfig:
             cmdAndShowEdit("ipconfig -all");
+            break;
+        case ID_GRADLE_PROXY:
+            openWeb("https://www.n.cn/agentchat/2446c51ce4044b7d9ea37b939d0867b7");
             break;
         case ID_CONFIG_GET_ITEM:
             ShowConfigItemPicker();

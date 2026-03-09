@@ -193,6 +193,7 @@
     <ClInclude Include="CTabPageSettingsConfig.h" />
     <ClInclude Include="DragEdit.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="IniConfigReader.h" />
     <ClInclude Include="PathAndUseConfigDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="CTabPageBuildProp.cpp" />
     <ClCompile Include="CTabPageSettingsConfig.cpp" />
     <ClCompile Include="DragEdit.cpp" />
+    <ClCompile Include="IniConfigReader.cpp" />
     <ClCompile Include="PathAndUseConfigDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

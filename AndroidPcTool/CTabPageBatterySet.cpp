@@ -7,6 +7,10 @@
 #include "CTabPageBatterySet.h"
 #include "AndroidPcToolDlg.h"
 
+namespace {
+	AndroidPcToolDlg* dlg;
+}
+
 // CTabPageBatterySet 对话框
 
 IMPLEMENT_DYNAMIC(CTabPageBatterySet, CDialogEx)
@@ -28,6 +32,12 @@ void CTabPageBatterySet::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_BATTERY_VALUE, batteryValue);
 }
 
+BOOL  CTabPageBatterySet::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+	dlg = (AndroidPcToolDlg*)(GetParent()->GetParent());
+	return TRUE;
+}
 
 BEGIN_MESSAGE_MAP(CTabPageBatterySet, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_BATTERY_SET, &CTabPageBatterySet::OnBnClickedButtonBatterySet)
@@ -42,7 +52,6 @@ END_MESSAGE_MAP()
 void CTabPageBatterySet::OnBnClickedButtonBatterySet()
 {
 	UpdateData(TRUE);
-	AndroidPcToolDlg* dlg = (AndroidPcToolDlg*)(GetParent()->GetParent());
 	CString cmd("adb shell dumpsys battery set level ");
 	cmd.Append(batteryValue);
 	dlg->cmdAndShowEdit(CStringA(cmd));
@@ -50,22 +59,16 @@ void CTabPageBatterySet::OnBnClickedButtonBatterySet()
 
 void CTabPageBatterySet::OnBnClickedButton3()
 {
-	AndroidPcToolDlg* dlg = (AndroidPcToolDlg*)(GetParent()->GetParent());
-	CString cmd("adb shell dumpsys battery unplug");
-	dlg->cmdAndShowEdit(CStringA(cmd));
+	dlg->cmdAndShowEdit("adb shell dumpsys battery unplug");
 }
 
 void CTabPageBatterySet::OnBnClickedButtonBatteryReset()
 {
-	AndroidPcToolDlg* dlg = (AndroidPcToolDlg*)(GetParent()->GetParent());
-	CString cmd("adb shell dumpsys battery reset");
-	dlg->cmdAndShowEdit(CStringA(cmd));
+	dlg->cmdAndShowEdit("adb shell dumpsys battery reset");
 }
 
 void CTabPageBatterySet::OnBnClickedButtonBatteryGet()
 {
-	AndroidPcToolDlg* dlg = (AndroidPcToolDlg*)(GetParent()->GetParent());
-	CString cmd("adb shell dumpsys battery get level");
-	batteryValue = dlg->cmdAndShowEdit(CStringA(cmd));
+	batteryValue = dlg->cmdAndShowEdit("adb shell dumpsys battery get level");
 	UpdateData(FALSE);
 }
