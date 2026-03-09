@@ -9,6 +9,7 @@
 #include "CTabPageBatterySet.h"
 #include "CTabPageBuildProp.h"
 #include "CTabPageSettingsConfig.h"
+#include "IniConfigReader.h"
 
 // AndroidPcToolDlg 对话框
 class AndroidPcToolDlg : public CDialogEx
